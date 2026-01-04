@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2D Game</title>
+
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="minigame.css" />
+</head>
+
+<body>
+    <!-- Game Container -->
+    <div class="game-container" id="game">
+        <div class="player frame-1" id="player"></div>
+
+        <div class="DescriptionBox">
+            <p>
+                Use <strong>W/A/S/D</strong> to move around.<br>
+                Press <strong>E</strong> to interact with seats!
+            </p>
+        </div>
+
+        <!-- Obstacles -->
+        <div class="obstacle" style="left: 5px; top: 100px; width: 200px; height: 65px;"></div>
+
+        <div class="obstacle" data-type="table" style="left: 45px; top: 200px; width: 110px; height: 315px;"></div>
+        <div class="obstacle" data-type="table" style="left: 190px; top: 200px; width: 95px; height: 315px;"></div>
+        <div class="obstacle" data-type="table" style="left: 320px; top: 200px; width: 95px; height: 315px;"></div>
+        <div class="obstacle" data-type="table" style="left: 450px; top: 200px; width: 105px; height: 315px;"></div>
+
+        <div class="obstacle" style="left: 5px; top: 560px; width: 250px; height: 50px;"></div>
+        <div class="obstacle" style="left: 335px; top: 560px; width: 125px; height: 50px;"></div>
+
+        <div id="chatBubble"></div>
+
+        <button id="resetBtn" onclick="resetPlayer()">
+            <img src="assets/pictures/components/reload.png" alt="Reset" width="24" height="24">
+        </button>
+    </div>
+
+    <script>
+        const player = document.getElementById("player");
+        const game = document.getElementById("game");
+        const chatBubble = document.getElementById("chatBubble");
+
+        const speed = 3;
+        const FLOOR_TOP = 100;
+
+        let frame = 0;
+        let frameTimer = 0;
+        const frameSpeed = 10; // Higher = slower animation
+
+        let x = game.clientWidth - player.clientWidth - 20;
+        let y = FLOOR_TOP + 20;
+
+        let facing = "down";
+
+        player.style.left = x + "px";
+        player.style.top = y + "px";
+
+        const keys = { w: false, a: false, s: false, d: false };
+        let interact = false;
+
+        /* INPUT */
+        window.addEventListener("keydown", e => {
+            const k = e.key.toLowerCase();
+            console.log("KEY:", e.key);
+
+            if (k in keys) keys[k] = true;
+            if (k === "e") interact = true;
+        });
+
+        window.addEventListener("keyup", e => {
+            const k = e.key.toLowerCase();
+            if (k in keys) keys[k] = false;
+            if (k === "e") interact = false;
+        });
+
+        /* RESET FUNCTION */
+        function resetPlayer() {
+            // Set x and y back to the starting position (same as initial let x/y)
+            x = game.clientWidth - player.clientWidth - 20;
+            y = FLOOR_TOP + 20;
+
+            // Update the player element's position immediately
+            player.style.left = x + "px";
+            player.style.top = y + "px";
+
+            // Optional: Reset facing direction
+            facing = "down";
+
+            // Hide chat bubble on reset
+            chatBubble.style.display = "none";
+
+        }
+
+        /* SEATS */
+        let seatNames = []; // 2D array [row][seatIndex]
+
+        fetch("assets/data/seat.txt")
+            .then(res => res.text())
+            .then(text => {
+                seatNames = text
+                    .trim()
+                    .split("\n")
+                    .map(line =>
+                        line.split("|").map(name => name.trim())
+                    );
+
+                buildSeats();
+            })
+            .catch(err => console.error("Seat file error:", err));
+
+
+        const seats = [];
+
+        /* ANIMATION */
+        function updateAnimation(isMoving) {
+            frameTimer++;
+
+            if (frameTimer >= frameSpeed) {
+                frameTimer = 0;
+                frame++;
+            }
+
+            let frameX = 0;
+            let frameY = 0;
+
+            if (!isMoving) {
+                // IDLE: First row, first 2 frames
+                frameX = 10 + (frame % 2) * 24;
+                frameY = 23;
+            } else {
+                // WALKING: Second row, 4 frames
+                frameX = 10 + (frame % 4) * 24;
+                frameY = 48;
+            }
+
+            player.style.backgroundPosition = `-${frameX}px -${frameY}px`;
+
+            // Handle Flipping
+            if (facing === "left") {
+                player.style.setProperty('--dir', '-1');
+            } else if (facing === "right") {
+                player.style.setProperty('--dir', '1');
+            }
+        }
+
+        function buildSeats() {
+            seats.length = 0;
+
+            // Get all table columns
+            const columns = document.querySelectorAll('.obstacle[data-type="table"]');
+
+            columns.forEach((col, colIndex) => {
+                const colX = parseInt(col.style.left);
+                const colY = parseInt(col.style.top);
+                const colW = parseInt(col.style.width);
+                const colH = parseInt(col.style.height) + 60; // Adjust for seat placement
+
+                const tableCount = 5;
+                const tableH = colH / tableCount;
+
+                for (let i = 0; i < tableCount; i++) {
+                    const tableY = colY + i * tableH;
+
+                    const rowData = seatNames[i] || [];
+
+                    // FIX: Calculate which names belong to THIS column
+                    // colIndex 0 gets names [0,1], colIndex 1 gets [2,3], etc.
+                    const leftName = rowData[colIndex * 2] || "Empty";
+                    const rightName = rowData[colIndex * 2 + 1] || "Empty";
+
+                    // LEFT seat
+                    seats.push({
+                        x: colX - 25,
+                        y: tableY + tableH / 2 - 10,
+                        w: 30,
+                        h: 20,
+                        name: leftName
+                    });
+
+                    // RIGHT seat
+                    seats.push({
+                        x: colX + colW - 5,
+                        y: tableY + tableH / 2 - 10,
+                        w: 30,
+                        h: 20,
+                        name: rightName
+                    });
+                }
+            });
+
+            window.seats = seats;
+        }
+
+
+        /* HELPERS */
+        function rectOverlap(a, b) {
+            return (
+                a.x < b.x + b.w &&
+                a.x + a.w > b.x &&
+                a.y < b.y + b.h &&
+                a.y + a.h > b.y
+            );
+        }
+
+        function getLookBox() {
+            const size = 32; // Increased size
+            let lx = x + player.clientWidth / 2 - size / 2;
+            let ly = y + player.clientHeight / 2 - size / 2;
+
+            const reach = 30; // How far in front the player "looks"
+
+            if (facing === "left") lx -= reach;
+            if (facing === "right") lx += reach;
+
+            return { x: lx, y: ly, w: size, h: size };
+        }
+
+        const obstacles = document.querySelectorAll(".obstacle");
+
+        function isColliding(nx, ny) {
+            const playerRect = {
+                left: nx,
+                top: ny,
+                right: nx + player.clientWidth,
+                bottom: ny + player.clientHeight
+            };
+
+            for (const obs of obstacles) {
+                const r = obs.getBoundingClientRect();
+                const g = game.getBoundingClientRect();
+
+                const obsRect = {
+                    left: r.left - g.left,
+                    top: r.top - g.top,
+                    right: r.right - g.left,
+                    bottom: r.bottom - g.top
+                };
+
+                if (
+                    playerRect.right > obsRect.left &&
+                    playerRect.left < obsRect.right &&
+                    playerRect.bottom > obsRect.top &&
+                    playerRect.top < obsRect.bottom
+                ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /* PAUSE ON TAB SWITCH */
+        let isPaused = false;
+        let animationFrameId; // Variable to track the loop
+
+        window.addEventListener("focus", () => {
+            isPaused = false;
+            const overlay = document.getElementById("pauseOverlay");
+            if (overlay) overlay.style.display = "none";
+
+            // STOP any existing loop before starting a new one
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = requestAnimationFrame(update);
+
+            console.log("Game Resumed: Focus Regained");
+        });
+
+        window.addEventListener("blur", () => {
+            isPaused = true;
+            for (let k in keys) keys[k] = false;
+            const overlay = document.getElementById("pauseOverlay");
+            if (overlay) overlay.style.display = "flex";
+
+            // Stop the loop immediately
+            cancelAnimationFrame(animationFrameId);
+        });
+
+        /* GAME LOOP */
+        function update() {
+            if (isPaused) {
+                requestAnimationFrame(update);
+                return;
+            }
+
+            let dx = 0, dy = 0;
+
+            let isMoving = false;
+            if (keys.w) { dy--; facing = "up"; isMoving = true; }
+            if (keys.s) { dy++; facing = "down"; isMoving = true; }
+            if (keys.a) { dx--; facing = "left"; isMoving = true; }
+            if (keys.d) { dx++; facing = "right"; isMoving = true; }
+
+            if (dx || dy) {
+                const len = Math.hypot(dx, dy);
+                dx /= len;
+                dy /= len;
+
+                const nextX = x + dx * speed;
+                const nextY = y + dy * speed;
+
+                // X-axis collision
+                if (!isColliding(nextX, y)) {
+                    x = nextX;
+                }
+
+                // Y-axis collision
+                if (!isColliding(x, nextY)) {
+                    y = nextY;
+                }
+            }
+
+            y = Math.max(FLOOR_TOP, Math.min(game.clientHeight - player.clientHeight - 20, y));
+            x = Math.max(20, Math.min(game.clientWidth - player.clientWidth - 20, x));
+
+            player.style.left = x + "px";
+            player.style.top = y + "px";
+
+            /* INTERACTION */
+            chatBubble.style.display = "none";
+
+            if (interact) {
+                const look = getLookBox();
+                for (const seat of seats) {
+                    if (rectOverlap(look, seat)) {
+                        // chatBubble.style.display = "block";
+                        // chatBubble.textContent = seat.name;
+                        // console.log("Interacting with seat:", seat.name);
+
+                        // chatBubble.style.left = (x + player.clientWidth / 2) + "px";
+                        // chatBubble.style.top = (y - 25) + "px";
+                        // break;
+                        chatBubble.style.display = "block";
+                        chatBubble.textContent = seat.name;
+
+                        let bubbleX = x + player.clientWidth / 2;
+                        let bubbleY = y - 25; // Slightly above player head
+
+                        const bubbleWidth = chatBubble.offsetWidth;
+                        const gameWidth = game.clientWidth;
+
+                        bubbleX = Math.max(60, Math.min(gameWidth - bubbleWidth + 37, x));
+
+                        chatBubble.style.left = bubbleX + "px";
+                        chatBubble.style.top = bubbleY + "px";
+
+                        break;
+                    }
+                }
+            }
+            updateAnimation(isMoving);
+
+            animationFrameId = requestAnimationFrame(update);
+        }
+
+        update();
+
+    </script>
+
+</body>
+
+</html>
