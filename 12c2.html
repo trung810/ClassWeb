@@ -134,118 +134,55 @@
     </div>
   </section>
 
-  <br />
   <section id="section2" class="page-section">
     <h1>Mục 2</h1>
 
-    <!--
-        <div class="content-with-sidebox">
-      LEFT: main content
-      <div class="main-content">
-        put game / slider / image here
-      </div>
-
-      RIGHT: side textbox
-      <aside class="side-box">
-          put content here
-      </aside>
-    </div>
-    -->
-    <div class="content-with-sidebox">
-      <!-- LEFT: main content -->
-      <div class="main-content">
-        <div class="image-slider">
-          <button class="slider-btn prev">‹</button>
-
-          <div class="slider-window">
-            <div class="slider-track">
-              <img src="assets/pictures/components/slide1.png" alt="Slide 1">
-              <img src="assets/pictures/components/slide2.png" alt="Slide 2">
-              <img src="assets/pictures/components/slide3.png" alt="Slide 3">
-            </div>
-          </div>
-
-          <button class="slider-btn next">›</button>
+    <div class="carousel-container">
+      <div class="carousel">
+        <button class="nav prev">‹</button>
+        <div class="viewport">
+          <div class="track" id="track"></div>
         </div>
+        <button class="nav next">›</button>
       </div>
-      <!-- RIGHT: side textbox -->
-      <aside class="side-box">
-        <h3>Thông tin</h3>
-        <p>
-          Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
-          vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
-          được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
-          96.
-        </p>
-      </aside>
     </div>
 
-    <div class="card">
-      <p>
-        Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
-        vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
-        được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
-        96. Tự mày mò học code rồi đi làm remote cho công ty Mỹ 2 năm nay.
-        Mỗi tối online 3-4 giờ là xong việc. Lương tháng 3k6. Nhưng thu nhập
-        chính vẫn là từ nhận các project bên ngoài làm thêm. Tuần làm 2,3
-        cái nhẹ nhàng 9,10k tiền tươi thóc thật không phải đóng thuế. Làm
-        gần được 3 năm mà nhà xe nó đã mua đủ cả. Nghĩ mà thèm. Gái gú thì
-        cứ nghe nó bảo làm CNTT thì chảy nước. Có bé kia dân du học sinh Úc,
-        về được cô chị giới thiệu làm ngân hàng VCB. Thế nào thằng ấy đi mở
-        thẻ tín dụng gặp phải thế là hốt được cả chị lẫn em. 3 đứa nó sống
-        chung một căn hộ cao cấp. Nhà con bé kia biết chuyện ban đầu phản
-        đối sau biết thằng đấy học IT thì đổi thái độ, cách ba bữa hỏi thăm,
-        năm bữa tặng quà lấy long, luôn giục cưới kẻo lỡ kèo ngon.
-      </p>
+    <div class="card" style="margin: 20px auto;">
+      <p id="carousel-desc">Loading...</p>
     </div>
   </section>
 
-  <br />
   <section id="section3" class="page-section">
     <h1>Mục 3</h1>
-
     <div class="content-with-sidebox">
-      <!-- LEFT: main content -->
       <div class="main-content">
-        <div class="game-layout">
-          <!-- Game -->
-          <iframe src="minigame.html" width="620" height="660" id="gameFrame" tabindex="0"
-            style="border: none; border-radius: 12px;">
-          </iframe>
-        </div>
+        <iframe src="minigame.html" width="620" height="660" id="gameFrame"
+          style="border: none; border-radius: 12px;"></iframe>
       </div>
-
-      <!-- RIGHT: side textbox -->
       <div class="side-box">
         <h3>Thông tin</h3>
-        <p>
-          Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
-          vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
-          được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
-          96.
-        </p>
+        <p>Ngành IT Việt Nam hiện nay...</p>
       </div>
     </div>
-
-
-    <div class="card">
-      <p>
-        Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
-        vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
-        được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
-        96. Tự mày mò học code rồi đi làm remote cho công ty Mỹ 2 năm nay.
-        Mỗi tối online 3-4 giờ là xong việc. Lương tháng 3k6. Nhưng thu nhập
-        chính vẫn là từ nhận các project bên ngoài làm thêm. Tuần làm 2,3
-        cái nhẹ nhàng 9,10k tiền tươi thóc thật không phải đóng thuế. Làm
-        gần được 3 năm mà nhà xe nó đã mua đủ cả. Nghĩ mà thèm. Gái gú thì
-        cứ nghe nó bảo làm CNTT thì chảy nước. Có bé kia dân du học sinh Úc,
-        về được cô chị giới thiệu làm ngân hàng VCB. Thế nào thằng ấy đi mở
-        thẻ tín dụng gặp phải thế là hốt được cả chị lẫn em. 3 đứa nó sống
-        chung một căn hộ cao cấp. Nhà con bé kia biết chuyện ban đầu phản
-        đối sau biết thằng đấy học IT thì đổi thái độ, cách ba bữa hỏi thăm,
-        năm bữa tặng quà lấy long, luôn giục cưới kẻo lỡ kèo ngon.
-      </p>
-    </div>
+    
+  <div class="card">
+    <p>
+      Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
+      vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
+      được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
+      96. Tự mày mò học code rồi đi làm remote cho công ty Mỹ 2 năm nay.
+      Mỗi tối online 3-4 giờ là xong việc. Lương tháng 3k6. Nhưng thu nhập
+      chính vẫn là từ nhận các project bên ngoài làm thêm. Tuần làm 2,3
+      cái nhẹ nhàng 9,10k tiền tươi thóc thật không phải đóng thuế. Làm
+      gần được 3 năm mà nhà xe nó đã mua đủ cả. Nghĩ mà thèm. Gái gú thì
+      cứ nghe nó bảo làm CNTT thì chảy nước. Có bé kia dân du học sinh Úc,
+      về được cô chị giới thiệu làm ngân hàng VCB. Thế nào thằng ấy đi mở
+      thẻ tín dụng gặp phải thế là hốt được cả chị lẫn em. 3 đứa nó sống
+      chung một căn hộ cao cấp. Nhà con bé kia biết chuyện ban đầu phản
+      đối sau biết thằng đấy học IT thì đổi thái độ, cách ba bữa hỏi thăm,
+      năm bữa tặng quà lấy long, luôn giục cưới kẻo lỡ kèo ngon.
+    </p>
+  </div>
   </section>
 
   <br />
@@ -305,29 +242,88 @@
 
   <!-- Image Slider -->
   <script>
-    const track = document.querySelector(".slider-track");
-    const slides = document.querySelectorAll(".slider-track img");
-    const prevBtn = document.querySelector(".slider-btn.prev");
-    const nextBtn = document.querySelector(".slider-btn.next");
+    const track = document.getElementById("track");
+    const prev = document.querySelector(".prev");
+    const next = document.querySelector(".next");
 
+    const path = "assets/pictures/carousel1/";
+    const ext = ".png";
+    let images = [];
     let index = 0;
-    const slideWidth = 640;
 
-    function updateSlide() {
-      track.style.transform = `translateX(-${index * slideWidth}px)`;
+    let descriptions = {}; // {1: "...", 2: "..."}
+
+    fetch("assets/pictures/carousel1/description.txt")
+      .then(res => res.text())
+      .then(text => {
+        text.trim().split("\n").forEach(line => {
+          const [id, desc] = line.split("|");
+          if (id && desc) {
+            descriptions[id.trim()] = desc.trim();
+          }
+        });
+      })
+      .catch(err => console.error("Description load error:", err));
+
+    function loadImages(i = 1) {
+      const img = new Image();
+      img.src = `${path}${i}${ext}`;
+      img.onload = () => {
+        images.push(img.src);
+        const slideDiv = document.createElement("div");
+        slideDiv.className = "slide";
+        const slideImg = document.createElement("img");
+        slideImg.src = img.src;
+        slideDiv.appendChild(slideImg);
+        track.appendChild(slideDiv);
+        loadImages(i + 1);
+      };
+      img.onerror = () => {
+        if (images.length > 0) updateSlider();
+      };
     }
 
-    nextBtn.addEventListener("click", () => {
-      index = (index + 1) % slides.length;
-      updateSlide();
-    });
+    function updateSlider() {
+      const slides = document.querySelectorAll('.slide');
+      if (slides.length === 0) return;
 
-    prevBtn.addEventListener("click", () => {
-      index = (index - 1 + slides.length) % slides.length;
-      updateSlide();
-    });
+      const slideWidth = 540; // 500 (width) + 40 (total margin)
+
+      // Find the center of the viewport
+      const viewportWidth = document.querySelector('.viewport').offsetWidth;
+      const centerOffset = (viewportWidth / 2) - (slideWidth / 2);
+
+      // Calculate movement
+      const moveAmount = centerOffset - (index * slideWidth);
+
+      track.style.transform = `translateX(${moveAmount}px)`;
+
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        if (i === index) {
+          slide.classList.add('active');
+        }
+      });
+
+      const descEl = document.getElementById("carousel-desc");
+      const descKey = (index + 1).toString();
+
+      descEl.textContent = descriptions[descKey] || "No description available.";
+    }
+
+    prev.onclick = () => {
+      index = (index - 1 + images.length) % images.length;
+      updateSlider();
+    };
+
+    next.onclick = () => {
+      index = (index + 1) % images.length;
+      updateSlider();
+    };
+
+    window.addEventListener('resize', updateSlider);
+    loadImages();
   </script>
-
 
   <!-- Back to top button -->
   <button id="backToTop" aria-label="Back to top">

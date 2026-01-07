@@ -175,13 +175,13 @@ body {
   font-size: 1.1rem;
 }
 
-/* Image slider */
+/* Image slider
 .image-slider {
   margin-top: 24px;
   display: flex;
   align-items: center;
   gap: 16px;
-}
+} */
 
 /* Generic content + side box layout */
 .content-with-sidebox {
@@ -218,26 +218,91 @@ body {
   opacity: 0.9;
 }
 
+/* Center the whole component */
 
-.slider-window {
-  width: 640px;
-  height: 360px;
-  overflow: hidden;
-  border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-}
-
-.slider-track {
+.carousel-container {
   display: flex;
-  height: 100%;
-  transition: transform 0.4s ease;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0; /* Moves it down/gives breathing room */
+  width: 100%;
 }
 
-.slider-track img {
-  width: 640px;
-  height: 360px;
+.carousel  {
+  display: flex;
+  flex-direction: row;
+  /* Forces horizontal */
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  margin: 40px 0;
+}
+
+.viewport {
+  width: 900px;
+  height: 350px;
+  overflow: hidden;
+  position: relative;
+  /* Removed display:flex here to let the track handle positions */
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+.slide {
+  flex: 0 0 500px;
+  /* Landscape Width */
+  height: 350px;
+  /* Landscape Height */
+  margin: 0 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* Dimmed state */
+  transform: scale(0.75);
+  opacity: 0.4;
+  filter: grayscale(80%);
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  flex-shrink: 0;
+  /* Ensures image fills the landscape box */
+}
+
+.slide.active {
+  transform: scale(1.1);
+  /* Zoom in effect */
+  opacity: 1;
+  filter: grayscale(0%);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+}
+
+/* Nav Buttons Styling */
+.nav {
+  background: #181a21;
+  color: white;
+  border: 1px solid #485460;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.nav:hover {
+  background: #485460;
 }
 
 /* Image slider buttons */
@@ -320,11 +385,5 @@ body {
 
   .sidebar-footer {
     display: none;
-  }
-
-  .slider-window,
-  .slider-track img {
-    width: 100%;
-    height: 240px;
   }
 }
