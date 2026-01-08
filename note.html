@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="note.css">
+</head>
+
+<body>
+    <div id="background-marquee" class="marquee"></div>
+
+    <div class="content">
+        <div class="left-col">
+            <h1>Đôi lời muốn nói</h1>
+
+            <div class="input-box">
+                <input type="text" id="nameInput" placeholder="Your name (optional)">
+            </div>
+
+            <div class="input-box">
+                <textarea id="msgInput" placeholder="Drop your thought..."></textarea>
+                <p id="wordCount" style="opacity:.7;font-size:.9rem"></p>
+                <button onclick="sendMessage()">Post Message</button>
+            </div>
+
+            <p id="status"></p>
+
+            <div class="desc-box">
+                <h3>About this board</h3>
+                <p>This is a private space for class 12C2. Feel free to leave your memories,
+                    wishes, or secrets here. Please keep it respectful!</p>
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div id="commentBox" class="comments">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const msgInput = document.getElementById("msgInput");
+        const wordCount = document.getElementById("wordCount");
+        const max_word_count = 200;
+
+        msgInput.addEventListener("input", () => {
+            let words = msgInput.value.trim().split(/\s+/);
+            let count = msgInput.value.trim() === "" ? 0 : words.length;
+
+            if (count > max_word_count) {
+                msgInput.value = words.slice(0, max_word_count).join(" ");
+                count = max_word_count;
+            }
+
+            wordCount.innerText = `${count} / ${max_word_count} words`;
+
+            // auto resize
+            msgInput.style.height = "auto";
+            msgInput.style.height = msgInput.scrollHeight + "px";
+
+            // enable scrollbar if too tall
+            if (msgInput.scrollHeight > 180) {
+                msgInput.style.overflowY = "auto";
+            } else {
+                msgInput.style.overflowY = "hidden";
+            }
+        });
+
+
+        async function loadMessages() {
+            try {
+                const res = await fetch('/messages');
+                const text = await res.text();
+
+                const feed = document.getElementById('commentBox');
+                feed.innerHTML = "";
+
+                const lines = text
+                    .split('\n')
+                    .filter(l => l.trim() !== "")
+                    .reverse();
+
+                lines.forEach(line => {
+                    let [name, msg] = line.split('|');
+
+                    name = (name || "Anonymous").trim();
+                    msg = (msg || "").trim();
+
+                    feed.innerHTML += `
+                        <div class="comment">
+                            <div class="avatar">${name[0] || "A"}</div>
+                            <div class="body">
+                                <div class="name">${name}</div>
+                                <div class="time">${new Date().toLocaleString()}</div>
+                                <div class="text">${msg}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('msgInput');
+            const nameInput = document.getElementById('nameInput');
+
+            let message = input.value.trim();
+            let name = nameInput.value.trim() || "Anonymous";
+
+            if (!message) return;
+
+            const words = message.split(/\s+/);
+            if (words.length > 200) {
+                document.getElementById("status").innerText =
+                    `Max 200 words. You're at ${words.length}.`;
+                return;
+            }
+
+            const res = await fetch("/send-message", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: name || "",   // empty = Anonymous server-side
+                    message
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                input.value = "";
+                loadMessages();
+                document.getElementById('status').innerText = "Message sent!";
+            } else {
+                document.getElementById('status').innerText = data.error;
+            }
+        }
+
+
+        // Initial load
+        loadMessages();
+    </script>
+</body>
+
+</html>

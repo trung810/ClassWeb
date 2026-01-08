@@ -154,25 +154,12 @@ body {
 }
 
 .card {
+  position: relative;
   background: #181a21;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
   max-width: 800px;
-}
-
-/* Game + text layout */
-.game-layout {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  margin-top: 16px;
-  margin-bottom: 32px;
-}
-
-.game-textbox h3 {
-  margin-bottom: 12px;
-  font-size: 1.1rem;
 }
 
 /* Image slider
@@ -224,11 +211,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 0; /* Moves it down/gives breathing room */
+  padding: 40px 0;
+  /* Moves it down/gives breathing room */
   width: 100%;
 }
 
-.carousel  {
+.carousel {
   display: flex;
   flex-direction: row;
   /* Forces horizontal */
@@ -301,6 +289,12 @@ body {
   transition: background 0.3s;
 }
 
+.nav img {
+  width: 32px;
+  height: 32px;
+  filter: brightness(0) invert(1);
+}
+
 .nav:hover {
   background: #485460;
 }
@@ -323,6 +317,21 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
+.main-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#noteFrame {
+  width: 100%;
+  height: 700px;
+  /* Increase height if the content is long */
+  border: none;
+  border-radius: 12px;
+  display: block;
+}
 
 /* Back to Top Button */
 #backToTop {

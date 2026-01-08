@@ -1,6 +1,10 @@
 /* Import a handwritten font */
 @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
 
+* {
+    box-sizing: border-box;
+}
+
 #game {
     width: 600px;
     height: 640px;
