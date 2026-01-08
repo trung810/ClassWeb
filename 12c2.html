@@ -11,6 +11,16 @@
 </head>
 
 <body>
+  <div id="splash-screen">
+    <div class="splash-content">
+      <img id="splash-logo" src="assets/pictures/components/logo.jpg" alt="Logo" />
+      <div class="loader-container">
+        <div id="loading-bar"></div>
+      </div>
+      <p class="loading-text">Loading 12C2...</p>
+    </div>
+  </div>
+
   <aside class="sidebar">
     <!-- Logo -->
     <img class="logo" src="assets/pictures/components/logo.jpg" />
@@ -190,14 +200,13 @@
   <section id="section4" class="page-section">
     <h1>Mục 4</h1>
     <div class="main-content">
-      <iframe src="note.html" id="noteFrame"
-        style="border: none; border-radius: 12px;"></iframe>
+      <iframe src="note.html" id="noteFrame" style="border: none; border-radius: 12px;"></iframe>
     </div>
   </section>
 
   <!-- JS -->
 
-  <!-- Session  -->
+  <!-- Section  -->
   <script>
     const sections = document.querySelectorAll(".page-section");
     const navLinks = document.querySelectorAll(".nav-links a");
@@ -225,6 +234,38 @@
     );
 
     sections.forEach((section) => observer.observe(section));
+  </script>
+
+  <!-- splash screen -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const splash = document.getElementById('splash-screen');
+      const bar = document.getElementById('loading-bar');
+      const body = document.body;
+
+      let progress = 0;
+
+      // 1. Fake Loading Bar Animation
+      const interval = setInterval(() => {
+        progress += Math.random() * 30; // Randomly increment
+        if (progress > 100) progress = 100;
+
+        bar.style.width = progress + '%';
+
+        if (progress === 100) {
+          clearInterval(interval);
+          // Stop the pulsing before the final fade
+          const splashLogo = document.getElementById('splash-logo');
+          splashLogo.style.animation = "none";
+          
+          // 2. Start the Morph/Fade Transition
+          setTimeout(() => {
+            splash.classList.add('hidden'); // Fades the overlay
+            body.classList.add('loaded');   // Shows the actual site content
+          }, 500);
+        }
+      }, 200);
+    });
   </script>
 
   <!-- Image Slider -->

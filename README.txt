@@ -5,8 +5,9 @@
 --OpenAI moderation (optional)--
 3. Rename `.env.example` to `.env`.
 4. Add your OpenAI API Key (*) inside the `.env` file.
+5. Do the instructions on the `server.js` file
 
-5. Run the server: `npm start` or `node server.js`
-6. Open `http://localhost:3000` in your browser.
+6. Run the server: `npm start` or `node server.js`
+7. Open `http://localhost:3000` in your browser.
 
 (*) Go to https://platform.openai.com/settings/organization/api-keys to create one

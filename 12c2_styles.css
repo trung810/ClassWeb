@@ -15,6 +15,82 @@ body {
   color: #2f3640;
 }
 
+/* Splash Screen Styling */
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0c0e14;
+  /* Matches your body background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.8s cubic-bezier(0.77, 0, 0.175, 1), visibility 0.8s;
+}
+
+.splash-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#splash-logo {
+  width: 200px;
+  /* Large starting size */
+  height: 200px;
+  border-radius: 24px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 50px rgba(87, 96, 111, 0.3);
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Loading Bar */
+.loader-container {
+  width: 250px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+#loading-bar {
+  width: 0%;
+  height: 100%;
+  background: #00a8ff;
+  transition: width 0.4s ease;
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  opacity: 0.6;
+}
+
+/* State when finished */
+#splash-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Hide main content initially to prevent "flash" */
+body:not(.loaded) .sidebar,
+body:not(.loaded) .main,
+body:not(.loaded) .page-section {
+  opacity: 0;
+}
+
+body.loaded .sidebar,
+body.loaded .main {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
 /* Sidebar */
 .sidebar {
   position: fixed;
@@ -395,4 +471,58 @@ body {
   .sidebar-footer {
     display: none;
   }
+}
+
+/* The Zoom/Pulse Animation */
+@keyframes logoPulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 20px rgba(0, 168, 255, 0.2));
+  }
+
+  50% {
+    transform: scale(1.1);
+    /* Zoom in by 10% */
+    filter: drop-shadow(0 0 40px rgba(0, 168, 255, 0.5));
+  }
+
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 20px rgba(0, 168, 255, 0.2));
+  }
+}
+
+#splash-logo {
+  width: 200px;
+  height: 200px;
+  border-radius: 24px;
+  margin-bottom: 30px;
+  /* Apply the animation: 2 seconds long, smooth, repeat forever */
+  animation: logoPulse 2s ease-in-out infinite;
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s;
+}
+
+/* Add a final 'shrink' effect when loading finishes */
+#splash-screen.hidden #splash-logo {
+  transform: scale(0.2);
+  /* Shrinks toward sidebar size */
+  opacity: 0;
+}
+
+@keyframes textFlicker {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  animation: textFlicker 1.5s infinite;
 }

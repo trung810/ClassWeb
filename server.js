@@ -49,10 +49,14 @@ const isOnCooldown = (ip) => {
 //         }
 
 //         // 2. Save Message
-            // fs.appendFileSync(
-            //     DATA_FILE,
-            //     `${safeName} | ${safeMsg}\n`
-            // );
+// const { name, message } = req.body;
+
+// const safeName = (name || "Anonymous").replace(/\n/g, " ");
+// const safeMsg = message.replace(/\n/g, " ");
+// fs.appendFileSync(
+//     DATA_FILE,
+//     `${safeName} | ${safeMsg}\n`
+// );
 //         // 3. Update Cooldown
 //         const cooldowns = fs.existsSync(COOLDOWN_FILE) ? JSON.parse(fs.readFileSync(COOLDOWN_FILE)) : {};
 //         cooldowns[userIp] = Date.now();
@@ -65,8 +69,19 @@ const isOnCooldown = (ip) => {
 //     }
 // });
 
+
+//If API key is available, comment from this line
+
 app.post('/send-message', async (req, res) => {
     try {
+
+        // // Cooldown check
+        // const userIp = req.ip;
+
+        // if (isOnCooldown(userIp)) {
+        //     return res.status(429).json({ error: "24-hour cooldown active." });
+        // }
+
         const { name, message } = req.body;
 
         const safeName = (name || "Anonymous").replace(/\n/g, " ");
@@ -77,6 +92,11 @@ app.post('/send-message', async (req, res) => {
             `${safeName} | ${safeMsg}\n`
         );
 
+        // //Update Cooldown
+        // const cooldowns = fs.existsSync(COOLDOWN_FILE) ? JSON.parse(fs.readFileSync(COOLDOWN_FILE)) : {};
+        // cooldowns[userIp] = Date.now();
+        // fs.writeFileSync(COOLDOWN_FILE, JSON.stringify(cooldowns));
+
         res.json({ success: true });
 
     } catch (err) {
@@ -84,6 +104,8 @@ app.post('/send-message', async (req, res) => {
         res.status(500).json({ error: "Could not save message." });
     }
 });
+
+// to this line
 
 
 app.get('/messages', (req, res) => {
