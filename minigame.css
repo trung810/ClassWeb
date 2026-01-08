@@ -15,6 +15,35 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    /* Prevent the browser's default touch gestures from interfering with game touches */
+    touch-action: none;
+}
+
+/* Touch marker shown when user taps to move */
+.touch-marker {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,168,255,0.95);
+    background: rgba(0,168,255,0.12);
+    transform: translate(-50%, -50%) scale(0.8);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.25s;
+    opacity: 0;
+    z-index: 90;
+}
+
+.touch-marker.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: touchPulse 1200ms ease-out infinite;
+}
+
+@keyframes touchPulse {
+    0% { box-shadow: 0 0 0 0 rgba(0,168,255,0.35); }
+    70% { box-shadow: 0 0 0 14px rgba(0,168,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,168,255,0); }
 }
 
 
@@ -104,4 +133,73 @@
     pointer-events: none;
     display: none;
     transform: translate(-50%, -100%);
+}
+
+/* Mobile controls default: hidden on non-touch (desktop) */
+.mobile-controls {
+  display: none;
+}
+
+/* Mobile controls layout (visible on touch devices) */
+@media (pointer: coarse) {
+  #game {
+    width: min(92vw, 420px);
+    height: auto;
+    aspect-ratio: 600 / 640;
+    margin: 0 auto;
+  }
+
+  #player {
+    --scale: 2;
+  }
+
+  .mobile-controls {
+    position: static;
+    margin: 12px auto 0;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    width: min(92vw, 420px);
+    z-index: 120;
+    pointer-events: auto;
+  }
+
+  .dpad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .d-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .d-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+  }
+
+  .d-btn:active {
+    transform: translateY(1px);
+    background: rgba(0,0,0,0.7);
+  }
+
+  .d-btn.interact {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(180deg,#00a8ff,#0077cc);
+    font-weight: 700;
+  }
 }

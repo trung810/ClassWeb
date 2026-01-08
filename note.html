@@ -32,12 +32,36 @@
         </div>
 
         <div class="right-col">
-            <div id="commentBox" class="comments">
+            <div class="comments-header">
+                <button id="readCommentsBtn" aria-haspopup="dialog" aria-controls="commentsReadOverlay"
+                    title="Open read mode">Read more</button>
+            </div>
+            <div id="commentBox" class="comments" aria-live="polite" tabindex="0">
+            </div>
+
+            <!-- Read mode overlay (hidden by default) -->
+            <div id="commentsReadOverlay" class="comments-overlay" aria-hidden="true">
+                <div class="overlay-backdrop" tabindex="-1" data-overlay-backdrop>
+                    <div class="overlay-panel" role="dialog" aria-modal="true" aria-labelledby="commentsReadTitle">
+                        <div class="overlay-header">
+                            <h2 id="commentsReadTitle">Comments — Read more</h2>
+                            <div>
+                                <button id="closeCommentsRead" aria-label="Close read mode">Close</button>
+                            </div>
+                        </div>
+                        <div id="commentsReadContent" class="comments read-mode" tabindex="0">
+                            <!-- Cloned comments will appear here -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Persisted collapsed state
+        let commentsCollapsed = localStorage.getItem('commentsCollapsed') === '1';
+
         const msgInput = document.getElementById("msgInput");
         const wordCount = document.getElementById("wordCount");
         const max_word_count = 200;
@@ -65,42 +89,61 @@
             }
         });
 
+        // Global variable to store all messages for Read Mode
+        let allMessages = [];
 
         async function loadMessages() {
             try {
                 const res = await fetch('/messages');
                 const text = await res.text();
 
-                const feed = document.getElementById('commentBox');
-                feed.innerHTML = "";
-
-                const lines = text
+                // Parse and reverse the lines to get newest first
+                allMessages = text
                     .split('\n')
                     .filter(l => l.trim() !== "")
                     .reverse();
 
-                lines.forEach(line => {
-                    let [name, msg] = line.split('|');
-
-                    name = (name || "Anonymous").trim();
-                    msg = (msg || "").trim();
-
-                    feed.innerHTML += `
-                        <div class="comment">
-                            <div class="avatar">${name[0] || "A"}</div>
-                            <div class="body">
-                                <div class="name">${name}</div>
-                                <div class="time">${new Date().toLocaleString()}</div>
-                                <div class="text">${msg}</div>
-                            </div>
-                        </div>
-                    `;
-                });
-
+                renderMainFeed();
 
             } catch (err) {
-                console.error(err);
+                console.error("Failed to load messages:", err);
             }
+        }
+
+        // Function to render only the top 3 to the main comment box
+        function renderMainFeed() {
+            const feed = document.getElementById('commentBox');
+            feed.innerHTML = "";
+
+            // Take only the first 3 messages
+            const recentMessages = allMessages.slice(0, 3);
+
+            if (recentMessages.length === 0) {
+                feed.innerHTML = "<p style='opacity:0.5; text-align:center;'>No thoughts yet...</p>";
+                return;
+            }
+
+            recentMessages.forEach(line => {
+                feed.innerHTML += createCommentHTML(line);
+            });
+        }
+
+        // Helper function to generate the HTML for a single comment
+        function createCommentHTML(line) {
+            let [name, msg] = line.split('|');
+            name = (name || "Anonymous").trim();
+            msg = (msg || "").trim();
+
+            return `
+                <div class="comment">
+                    <div class="avatar">${name[0] || "A"}</div>
+                    <div class="body">
+                        <div class="name">${name}</div>
+                        <div class="time">${new Date().toLocaleString()}</div>
+                        <div class="text">${msg}</div>
+                    </div>
+                </div>
+            `;
         }
 
         async function sendMessage() {
@@ -139,9 +182,69 @@
             }
         }
 
-
         // Initial load
         loadMessages();
+
+        // Read mode overlay behavior (open near-fullscreen comments with dimmed backdrop)
+        (function () {
+            const readBtn = document.getElementById('readCommentsBtn');
+            const overlay = document.getElementById('commentsReadOverlay');
+            const readContent = document.getElementById('commentsReadContent');
+            const closeBtn = document.getElementById('closeCommentsRead');
+            let lastFocused = null;
+
+            if (!readBtn || !overlay) return;
+
+            function openReadMode() {
+                const readContent = document.getElementById('commentsReadContent');
+                readContent.innerHTML = '';
+
+                if (allMessages.length === 0) {
+                    readContent.innerHTML = "<p style='color:white; opacity:0.5;'>No messages to display.</p>";
+                } else {
+                    allMessages.forEach(line => {
+                        readContent.innerHTML += createCommentHTML(line);
+                    });
+                }
+
+                overlay.setAttribute('aria-hidden', 'false');
+                overlay.classList.add('open');
+                document.body.classList.add('comments-read-open');
+                lastFocused = document.activeElement;
+                closeBtn.focus();
+                document.addEventListener('keydown', onReadKeydown);
+            }
+            function closeReadMode() {
+                overlay.setAttribute('aria-hidden', 'true');
+                overlay.classList.remove('open');
+                document.body.classList.remove('comments-read-open');
+                readContent.innerHTML = '';
+                document.removeEventListener('keydown', onReadKeydown);
+                if (lastFocused) lastFocused.focus();
+            }
+
+            function onReadKeydown(e) {
+                if (e.key === 'Escape') { e.preventDefault(); closeReadMode(); return; }
+
+                if (e.key === 'Tab') {
+                    // Basic focus trap within overlay
+                    const focusables = overlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    const list = Array.prototype.filter.call(focusables, f => f.offsetParent !== null && !f.hasAttribute('disabled'));
+                    if (list.length === 0) { e.preventDefault(); return; }
+                    const first = list[0], last = list[list.length - 1];
+                    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+                }
+            }
+
+            readBtn.addEventListener('click', openReadMode);
+            closeBtn.addEventListener('click', closeReadMode);
+
+            // clicking backdrop closes when clicking outside the panel
+            overlay.querySelector('[data-overlay-backdrop]').addEventListener('click', (ev) => {
+                if (ev.target === ev.currentTarget) closeReadMode();
+            });
+        })();
     </script>
 </body>
 

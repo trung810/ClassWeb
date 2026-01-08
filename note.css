@@ -4,7 +4,8 @@
 
 body {
     margin: 0;
-    overflow: hidden;
+    overflow: auto;
+    overflow-x: hidden;
     font-family: sans-serif;
     background: #111;
     color: white;
@@ -27,27 +28,20 @@ body {
     display: flex;
     gap: 30px;
     width: 95%;
-    /* Increased width to utilize space */
-    margin: 5vh auto;
-    align-items: flex-start;
-}
-
-.left-col {
-    flex: 1;
-    display: flex;
     flex-direction: column;
-    gap: 20px;
-    min-width: 0;
-    /* Essential for flex shrinking */
-    overflow: hidden;
-    /* Keeps children from spilling out */
+    padding: 15px;
+    margin: 0;
+    box-sizing: border-box;
+    align-items: stretch;
 }
 
+.left-col,
 .right-col {
-    margin-left: 10px;
-    flex: 1.5;
+    width: 100%;
     min-width: 0;
-    /* FIX: Prevents comments from pushing the layout wide */
+    /* Prevents flex-children from overflowing */
+    margin: 0;
+    padding: 0;
 }
 
 .input-box {
@@ -92,13 +86,12 @@ body {
 
 .comments {
     width: 100%;
-    height: 600px;
-    /* Fixed height */
+    flex: none;
+    height: auto;
+    max-height: 500px;
     overflow-y: auto;
-    /* Scrollbar only when needed */
     overflow-x: hidden;
-    /* Disable horizontal scrolling */
-    padding: 15px;
+    padding: 18px;
     border-radius: 12px;
     background: #1b1b1b;
 }
@@ -126,12 +119,77 @@ body {
     top: 20%;
 }
 
+/* Responsive tweaks for narrow screens */
+@media (max-width: 768px) {
+    .marquee {
+        font-size: 2.2rem;
+    }
+
+    .content {
+        flex-direction: column;
+        gap: 14px;
+        margin: 4vh 4vw;
+    }
+
+    .left-col,
+    .right-col {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .comments {
+        max-height: min(560px, 72vh);
+    }
+
+    .input-box {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .input-box button {
+        width: 100%;
+        align-self: stretch;
+    }
+
+    #msgInput {
+        max-height: 140px;
+    }
+}
+
 .comment {
     padding: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     background: #222;
     border-radius: 8px;
     border-left: 4px solid #4e9cff;
+    transition: background 0.18s, padding 0.18s;
+}
+
+.comment .text {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.22s ease;
+}
+
+/* Header above comments */
+.comments-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.comments-header button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: #3a7afe;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.comments-header button[aria-pressed="true"] {
+    background: #2b5fd8;
 }
 
 .comment .avatar {
@@ -182,5 +240,105 @@ body {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Read-mode overlay for comments (near-fullscreen reading) */
+.comments-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.comments-overlay.open {
+    display: flex;
+}
+
+.comments-overlay .overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.66);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.overlay-panel {
+    background: #0f0f0f;
+    width: min(980px, 95vw);
+    height: min(920px, 90vh);
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.overlay-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.overlay-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+#closeCommentsRead {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: #3a7afe;
+    color: white;
+    cursor: pointer;
+}
+
+#commentsReadContent.comments {
+    height: 100%;
+    max-height: none;
+    background: transparent;
+}
+
+/* prevent background scroll while read mode is active */
+body.comments-read-open {
+    overflow: hidden;
+}
+
+/* Small screens: make read mode fill the viewport */
+@media (max-width: 640px) {
+    .overlay-panel {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        padding: 12px;
+    }
+}
+
+/* Minor style for read button */
+.comments-header button#readCommentsBtn {
+    margin-left: 8px;
+    background: #27c67a;
+}
+
+/* Small phones: use most of the viewport for comments but leave room for input/header */
+@media (max-width: 420px) {
+    .comments {
+        max-height: calc(100vh - 160px);
+    }
+}
+
+/* Respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .overlay-panel {
+        transition: none;
     }
 }

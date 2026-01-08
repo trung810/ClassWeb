@@ -24,9 +24,16 @@
   <aside class="sidebar">
     <!-- Logo -->
     <img class="logo" src="assets/pictures/components/logo.jpg" />
+    <button class="menu-toggle" aria-expanded="false" aria-controls="sidebarNav" aria-label="Open navigation">
+      <span class="sr-only">Open navigation</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" />
+      </svg>
+    </button>
 
     <!-- Navigation -->
-    <ul class="nav-links">
+    <ul id="sidebarNav" class="nav-links" role="navigation" aria-hidden="true">
       <li>
         <a href="#section1" data-section="section1">
           <img class="icon" src="assets/pictures/components/section1.svg" />
@@ -149,21 +156,20 @@
 
     <div class="carousel-container">
       <div class="carousel">
-        <button class="nav prev">
-          <img src="assets/pictures/components/prev.png" />
+        <button class="nav prev" aria-label="Previous slide">
+          <img src="assets/pictures/components/prev.png" alt="Previous" />
         </button>
         <div class="viewport">
           <div class="track" id="track"></div>
         </div>
-        <button class="nav next">
-          <img src="assets/pictures/components/next.png" />
-
+        <button class="nav next" aria-label="Next slide">
+          <img src="assets/pictures/components/next.png" alt="Next" />
         </button>
       </div>
     </div>
 
     <div class="card" style="margin: 20px auto;">
-      <p id="carousel-desc">Loading...</p>
+      <p id="carousel-desc" aria-live="polite">Loading...</p>
     </div>
   </section>
 
@@ -176,7 +182,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" style="margin: 20px auto;">
       <p>
         Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
         vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
@@ -257,7 +263,7 @@
           // Stop the pulsing before the final fade
           const splashLogo = document.getElementById('splash-logo');
           splashLogo.style.animation = "none";
-          
+
           // 2. Start the Morph/Fade Transition
           setTimeout(() => {
             splash.classList.add('hidden'); // Fades the overlay
@@ -270,87 +276,113 @@
 
   <!-- Image Slider -->
   <script>
-    const track = document.getElementById("track");
-    const prev = document.querySelector(".prev");
-    const next = document.querySelector(".next");
+    (function () {
+      const track = document.getElementById("track");
+      const prev = document.querySelector(".prev");
+      const next = document.querySelector(".next");
+      const viewport = document.querySelector('.viewport');
+      // disable nav until images are populated
+      if (prev) prev.disabled = true;
+      if (next) next.disabled = true;
 
-    const path = "assets/pictures/carousel1/";
-    const ext = ".png";
-    let images = [];
-    let index = 0;
+      const path = "assets/pictures/carousel1/";
+      const ext = ".png";
+      let images = [];
+      let index = 0;
 
-    let descriptions = {}; // {1: "...", 2: "..."}
+      let descriptions = {}; // {1: "...", 2: "..."}
 
-    fetch("assets/pictures/carousel1/description.txt")
-      .then(res => res.text())
-      .then(text => {
-        text.trim().split("\n").forEach(line => {
-          const [id, desc] = line.split("|");
-          if (id && desc) {
-            descriptions[id.trim()] = desc.trim();
+      fetch("assets/pictures/carousel1/description.txt")
+        .then(res => res.text())
+        .then(text => {
+          text.trim().split("\n").forEach(line => {
+            const [id, desc] = line.split("|");
+            if (id && desc) {
+              descriptions[id.trim()] = desc.trim();
+            }
+          });
+        })
+        .catch(err => console.error("Description load error:", err));
+
+      function loadImages(i = 1) {
+        const img = new Image();
+        img.src = `${path}${i}${ext}`;
+        img.onload = () => {
+          images.push(img.src);
+          const slideDiv = document.createElement("div");
+          slideDiv.className = "slide";
+          const slideImg = document.createElement("img");
+          slideImg.src = img.src;
+          slideImg.alt = `Carousel image ${i}`;
+          slideDiv.appendChild(slideImg);
+          track.appendChild(slideDiv);
+          loadImages(i + 1);
+        };
+        img.onerror = () => {
+          if (images.length > 0) {
+            updateSlider();
+            if (prev) prev.disabled = false;
+            if (next) next.disabled = false;
           }
+        };
+      }
+
+      function updateSlider() {
+        const slides = document.querySelectorAll('.slide');
+        if (slides.length === 0) return;
+
+        const viewportWidth = viewport.offsetWidth;
+        const slide = slides[index];
+
+        // Center the active slide in the viewport
+        const moveAmount = (viewportWidth - slide.offsetWidth) / 2 - slide.offsetLeft;
+
+        track.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+        track.style.transform = `translateX(${moveAmount}px)`;
+
+        slides.forEach((s, i) => {
+          s.classList.toggle('active', i === index);
         });
-      })
-      .catch(err => console.error("Description load error:", err));
 
-    function loadImages(i = 1) {
-      const img = new Image();
-      img.src = `${path}${i}${ext}`;
-      img.onload = () => {
-        images.push(img.src);
-        const slideDiv = document.createElement("div");
-        slideDiv.className = "slide";
-        const slideImg = document.createElement("img");
-        slideImg.src = img.src;
-        slideDiv.appendChild(slideImg);
-        track.appendChild(slideDiv);
-        loadImages(i + 1);
-      };
-      img.onerror = () => {
-        if (images.length > 0) updateSlider();
-      };
-    }
+        const descEl = document.getElementById("carousel-desc");
+        const descKey = (index + 1).toString();
 
-    function updateSlider() {
-      const slides = document.querySelectorAll('.slide');
-      if (slides.length === 0) return;
+        descEl.textContent = descriptions[descKey] || "No description available.";
+      }
 
-      const slideWidth = 540; // 500 (width) + 40 (total margin)
-
-      // Find the center of the viewport
-      const viewportWidth = document.querySelector('.viewport').offsetWidth;
-      const centerOffset = (viewportWidth / 2) - (slideWidth / 2);
-
-      // Calculate movement
-      const moveAmount = centerOffset - (index * slideWidth);
-
-      track.style.transform = `translateX(${moveAmount}px)`;
-
-      slides.forEach((slide, i) => {
-        slide.classList.remove('active');
-        if (i === index) {
-          slide.classList.add('active');
-        }
+      if (prev) prev.addEventListener('click', () => {
+        index = (index - 1 + images.length) % images.length;
+        updateSlider();
+      });
+      if (next) next.addEventListener('click', () => {
+        index = (index + 1) % images.length;
+        updateSlider();
       });
 
-      const descEl = document.getElementById("carousel-desc");
-      const descKey = (index + 1).toString();
+      // Touch support - simple swipe detection
+      let startX = null;
+      viewport && viewport.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+      }, { passive: true });
 
-      descEl.textContent = descriptions[descKey] || "No description available.";
-    }
+      viewport && viewport.addEventListener('touchend', (e) => {
+        if (startX === null) return;
+        const endX = e.changedTouches[0].clientX;
+        const diff = endX - startX;
+        if (diff > 40) { index = (index - 1 + images.length) % images.length; updateSlider(); }
+        else if (diff < -40) { index = (index + 1) % images.length; updateSlider(); }
+        startX = null;
+      });
 
-    prev.onclick = () => {
-      index = (index - 1 + images.length) % images.length;
-      updateSlider();
-    };
+      // keyboard support: left/right arrow
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') { index = (index - 1 + images.length) % images.length; updateSlider(); }
+        if (e.key === 'ArrowRight') { index = (index + 1) % images.length; updateSlider(); }
+      });
 
-    next.onclick = () => {
-      index = (index + 1) % images.length;
-      updateSlider();
-    };
-
-    window.addEventListener('resize', updateSlider);
-    loadImages();
+      window.addEventListener('resize', updateSlider);
+      loadImages();
+    })();
   </script>
 
   <!-- Back to top button -->
@@ -372,6 +404,68 @@
     btn.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
+  </script>
+
+  <!-- Sidebar toggle (mobile) -->
+  <script>
+    (function () {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.menu-toggle');
+      const sidebarNav = document.getElementById('sidebarNav');
+      if (!sidebar || !toggle) return;
+
+      function getFocusable() {
+        return sidebarNav ? Array.from(sidebarNav.querySelectorAll('a, button')) : [];
+      }
+
+      function closeMenu() {
+        sidebar.classList.remove('expanded');
+        toggle.setAttribute('aria-expanded', 'false');
+        if (sidebarNav) sidebarNav.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('menu-open');
+        document.removeEventListener('click', onDocClick);
+        document.removeEventListener('keydown', onKeyDown);
+        toggle.focus();
+      }
+
+      function openMenu() {
+        sidebar.classList.add('expanded');
+        toggle.setAttribute('aria-expanded', 'true');
+        if (sidebarNav) sidebarNav.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('menu-open');
+        setTimeout(() => {
+          const focusable = getFocusable();
+          if (focusable.length) focusable[0].focus();
+          document.addEventListener('click', onDocClick);
+          document.addEventListener('keydown', onKeyDown);
+        }, 10);
+      }
+
+      function onDocClick(e) {
+        if (!sidebar.contains(e.target) && !toggle.contains(e.target)) closeMenu();
+      }
+
+      function onKeyDown(e) {
+        if (e.key === 'Escape') { closeMenu(); return; }
+        if (e.key === 'Tab') {
+          const focusable = getFocusable();
+          if (!focusable.length) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
+
+      toggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const expanded = this.getAttribute('aria-expanded') === 'true';
+        if (expanded) closeMenu(); else openMenu();
+      });
+
+      // ensure initial state
+      if (sidebarNav) sidebarNav.setAttribute('aria-hidden', 'true');
+    })();
   </script>
 </body>
 

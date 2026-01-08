@@ -14,11 +14,12 @@
     <!-- Game Container -->
     <div class="game-container" id="game">
         <div class="player frame-1" id="player"></div>
+        <div id="touchMarker" class="touch-marker" aria-hidden="true"></div>
 
         <div class="DescriptionBox">
             <p>
-                Use <strong>W/A/S/D</strong> to move around.<br>
-                Press <strong>E</strong> to interact with seats!
+                Use <strong>W/A/S/D</strong> or <strong>Click</strong> to move around.<br>
+                Hold <strong>E</strong> to interact with seats!<br>
             </p>
         </div>
 
@@ -33,11 +34,26 @@
         <div class="obstacle" style="left: 5px; top: 560px; width: 250px; height: 50px;"></div>
         <div class="obstacle" style="left: 335px; top: 560px; width: 125px; height: 50px;"></div>
 
-        <div id="chatBubble"></div>
+        <div id="chatBubble" aria-live="polite" role="status"></div>
 
         <button id="resetBtn" onclick="resetPlayer()">
             <img src="assets/pictures/components/reload.png" alt="Reset" width="24" height="24">
         </button>
+
+
+    </div>
+
+    <!-- Mobile controls (visible on touch devices) -->
+    <div class="mobile-controls" aria-hidden="false">
+        <div class="dpad">
+            <button class="d-btn up" data-dir="up" aria-label="Move up">▲</button>
+            <div class="d-row">
+                <button class="d-btn left" data-dir="left" aria-label="Move left">◀</button>
+                <button class="d-btn right" data-dir="right" aria-label="Move right">▶</button>
+            </div>
+            <button class="d-btn down" data-dir="down" aria-label="Move down">▼</button>
+        </div>
+        <button class="d-btn interact" id="mobileInteract" aria-label="Interact">E</button>
     </div>
 
     <script>
@@ -47,6 +63,7 @@
 
         const speed = 3;
         const FLOOR_TOP = 100;
+        const INTERACT_RADIUS = 60;
 
         let frame = 0;
         let frameTimer = 0;
@@ -63,13 +80,22 @@
         const keys = { w: false, a: false, s: false, d: false };
         let interact = false;
 
+        // Touch / pointer target (null when not moving to a touch point)
+        let touchTarget = null; // { tx, ty, cx, cy }
+        const touchMarker = document.getElementById('touchMarker');
+
+        // Touch double-tap interaction removed — mobile uses on-screen controls below the game.
+
         /* INPUT */
         window.addEventListener("keydown", e => {
             const k = e.key.toLowerCase();
-            console.log("KEY:", e.key);
 
             if (k in keys) keys[k] = true;
-            if (k === "e") interact = true;
+            if (k === "e") {
+                // perform immediate interaction for keyboard users
+                performInteract();
+                interact = true;
+            }
         });
 
         window.addEventListener("keyup", e => {
@@ -77,6 +103,103 @@
             if (k in keys) keys[k] = false;
             if (k === "e") interact = false;
         });
+
+        // Pointer handling: ignore touch input entirely (mobile uses on-screen controls below the game).
+        // For mouse/pen (non-touch) we still support click-to-move.
+        game.addEventListener('pointerdown', (ev) => {
+            if (ev.pointerType === 'touch') return; // do not handle touch taps here
+
+            const rect = game.getBoundingClientRect();
+            const cx = ev.clientX - rect.left;
+            const cy = ev.clientY - rect.top;
+
+            const tx = Math.max(20, Math.min(game.clientWidth - player.clientWidth - 20, cx - player.clientWidth / 2));
+            const ty = Math.max(FLOOR_TOP, Math.min(game.clientHeight - player.clientHeight - 20, cy - player.clientHeight / 2));
+
+            touchTarget = { tx, ty, cx, cy };
+
+            if (touchMarker) {
+                touchMarker.style.left = cx + 'px';
+                touchMarker.style.top = cy + 'px';
+                touchMarker.classList.add('visible');
+                clearTimeout(touchMarker._hideTimeout);
+                touchMarker._hideTimeout = setTimeout(() => touchMarker.classList.remove('visible'), 2000);
+            }
+
+            for (let k in keys) keys[k] = false;
+        });
+
+        // Also support touchcancel to cancel a target
+        game.addEventListener('pointercancel', () => {
+            touchTarget = null;
+            if (touchMarker) touchMarker.classList.remove('visible');
+        });
+
+        // MOBILE CONTROLS: D-pad and interact button handlers
+        (function(){
+            const dpadButtons = document.querySelectorAll('.d-btn[data-dir]');
+            const interactBtn = document.getElementById('mobileInteract');
+
+            // If there are no mobile controls in the DOM, skip
+            if (!dpadButtons.length && !interactBtn) return;
+
+            // Make mobile controls accessible only on touch (CSS shows them via pointer:coarse)
+            dpadButtons.forEach(btn => {
+                const dir = btn.dataset.dir;
+                const keyMap = { up: 'w', down: 's', left: 'a', right: 'd' };
+                const mappedKey = keyMap[dir];
+                if (!mappedKey) return;
+
+                btn.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    keys[mappedKey] = true;
+                    btn.setAttribute('data-active','true');
+                    // capture pointer to ensure we receive pointerup
+                    btn.setPointerCapture && btn.setPointerCapture(e.pointerId);
+                });
+
+                btn.addEventListener('pointerup', (e) => {
+                    keys[mappedKey] = false;
+                    btn.removeAttribute('data-active');
+                });
+
+                btn.addEventListener('pointercancel', (e) => {
+                    keys[mappedKey] = false;
+                    btn.removeAttribute('data-active');
+                });
+            });
+
+            if (interactBtn) {
+                interactBtn.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    // immediate interact action: try interacting with nearby seat
+                    performInteract();
+                    interactBtn.setAttribute('data-active','true');
+                });
+
+                interactBtn.addEventListener('pointerup', (e) => {
+                    interactBtn.removeAttribute('data-active');
+                });
+
+                interactBtn.addEventListener('pointercancel', (e) => {
+                    interactBtn.removeAttribute('data-active');
+                });
+            }
+        })();
+
+        // Hide mobile controls from assistive tech on desktop, show on coarse pointers
+        (function(){
+            const mobileControls = document.querySelector('.mobile-controls');
+            if (!mobileControls) return;
+            const mq = window.matchMedia('(pointer: coarse)');
+            function update() {
+                const isCoarse = mq.matches;
+                mobileControls.setAttribute('aria-hidden', isCoarse ? 'false' : 'true');
+            }
+            update();
+            if (mq.addEventListener) mq.addEventListener('change', update);
+            else mq.addListener(update);
+        })();
 
         /* RESET FUNCTION */
         function resetPlayer() {
@@ -99,6 +222,34 @@
         /* SEATS */
         let seatNames = []; // 2D array [row][seatIndex]
 
+        // Perform a single interaction (used by mobile interact button and keyboard 'E')
+        function performInteract() {
+            // First, try the look-box in front of the player
+            const look = getLookBox();
+            for (const seat of seats) {
+                if (rectOverlap(look, seat)) {
+                    showSeatInfo(seat, seat.x + seat.w / 2, seat.y + seat.h / 2);
+                    return;
+                }
+            }
+
+            // If none in lookbox, check for any seat within INTERACT_RADIUS (nearby)
+            const pcx = x + player.clientWidth / 2;
+            const pcy = y + player.clientHeight / 2;
+            let nearest = null;
+            let best = Infinity;
+            for (const seat of seats) {
+                const sx = seat.x + seat.w / 2;
+                const sy = seat.y + seat.h / 2;
+                const d = Math.hypot(pcx - sx, pcy - sy);
+                if (d <= INTERACT_RADIUS && d < best) {
+                    best = d;
+                    nearest = seat;
+                }
+            }
+            if (nearest) showSeatInfo(nearest, nearest.x + nearest.w / 2, nearest.y + nearest.h / 2);
+        }
+
         fetch("assets/data/seat.txt")
             .then(res => res.text())
             .then(text => {
@@ -115,6 +266,35 @@
 
 
         const seats = [];
+
+        /* Show seat info (used for double-tap on touch devices) */
+        function showSeatInfo(seat, cx, cy) {
+            if (!seat) return;
+            chatBubble.style.display = 'block';
+            chatBubble.textContent = seat.name;
+
+            // position the bubble near the seat (center-top)
+            let bubbleX = seat.x + seat.w / 2;
+            let bubbleY = Math.max(10, seat.y - 12);
+
+            // ensure the bubble doesn't overflow the game area
+            // measure after setting text so width is accurate
+            // temporarily set left/top to allow offsetWidth calculation
+            chatBubble.style.left = bubbleX + 'px';
+            chatBubble.style.top = bubbleY + 'px';
+
+            const bubbleWidth = chatBubble.offsetWidth || 120;
+            bubbleX = Math.max(60, Math.min(game.clientWidth - bubbleWidth + 37, bubbleX));
+
+            chatBubble.style.left = bubbleX + 'px';
+            chatBubble.style.top = bubbleY + 'px';
+
+            // auto-hide after a few seconds
+            clearTimeout(chatBubble._hideTimeout);
+            chatBubble._hideTimeout = setTimeout(() => {
+                chatBubble.style.display = 'none';
+            }, 3500);
+        }
 
         /* ANIMATION */
         function updateAnimation(isMoving) {
@@ -289,27 +469,69 @@
             let dx = 0, dy = 0;
 
             let isMoving = false;
-            if (keys.w) { dy--; facing = "up"; isMoving = true; }
-            if (keys.s) { dy++; facing = "down"; isMoving = true; }
-            if (keys.a) { dx--; facing = "left"; isMoving = true; }
-            if (keys.d) { dx++; facing = "right"; isMoving = true; }
 
-            if (dx || dy) {
-                const len = Math.hypot(dx, dy);
-                dx /= len;
-                dy /= len;
+            // Touch-target movement has priority on touch devices
+            if (touchTarget) {
+                // Compute vector from player's center to target center
+                const pcx = x + player.clientWidth / 2;
+                const pcy = y + player.clientHeight / 2;
 
-                const nextX = x + dx * speed;
-                const nextY = y + dy * speed;
+                const vx = touchTarget.cx - pcx;
+                const vy = touchTarget.cy - pcy;
+                const dist = Math.hypot(vx, vy);
 
-                // X-axis collision
-                if (!isColliding(nextX, y)) {
-                    x = nextX;
+                if (dist < speed * 1.4) {
+                    // Snap to target and stop
+                    x = touchTarget.tx;
+                    y = touchTarget.ty;
+                    touchTarget = null;
+                    if (touchMarker) touchMarker.classList.remove('visible');
+                } else {
+                    dx = vx / dist;
+                    dy = vy / dist;
+
+                    // set facing based on dominant axis
+                    if (Math.abs(dx) > Math.abs(dy)) facing = dx < 0 ? 'left' : 'right';
+                    else facing = dy < 0 ? 'up' : 'down';
+
+                    const nextX = x + dx * speed;
+                    const nextY = y + dy * speed;
+
+                    // X-axis collision
+                    if (!isColliding(nextX, y)) {
+                        x = nextX;
+                    }
+
+                    // Y-axis collision
+                    if (!isColliding(x, nextY)) {
+                        y = nextY;
+                    }
+
+                    isMoving = true;
                 }
+            } else {
+                if (keys.w) { dy--; facing = "up"; isMoving = true; }
+                if (keys.s) { dy++; facing = "down"; isMoving = true; }
+                if (keys.a) { dx--; facing = "left"; isMoving = true; }
+                if (keys.d) { dx++; facing = "right"; isMoving = true; }
 
-                // Y-axis collision
-                if (!isColliding(x, nextY)) {
-                    y = nextY;
+                if (dx || dy) {
+                    const len = Math.hypot(dx, dy);
+                    dx /= len;
+                    dy /= len;
+
+                    const nextX = x + dx * speed;
+                    const nextY = y + dy * speed;
+
+                    // X-axis collision
+                    if (!isColliding(nextX, y)) {
+                        x = nextX;
+                    }
+
+                    // Y-axis collision
+                    if (!isColliding(x, nextY)) {
+                        y = nextY;
+                    }
                 }
             }
 
@@ -319,6 +541,7 @@
             player.style.left = x + "px";
             player.style.top = y + "px";
 
+
             /* INTERACTION */
             chatBubble.style.display = "none";
 
@@ -326,13 +549,6 @@
                 const look = getLookBox();
                 for (const seat of seats) {
                     if (rectOverlap(look, seat)) {
-                        // chatBubble.style.display = "block";
-                        // chatBubble.textContent = seat.name;
-                        // console.log("Interacting with seat:", seat.name);
-
-                        // chatBubble.style.left = (x + player.clientWidth / 2) + "px";
-                        // chatBubble.style.top = (y - 25) + "px";
-                        // break;
                         chatBubble.style.display = "block";
                         chatBubble.textContent = seat.name;
 

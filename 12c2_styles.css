@@ -402,7 +402,7 @@ body.loaded .main {
 
 #noteFrame {
   width: 100%;
-  height: 700px;
+  height: 1200px;
   /* Increase height if the content is long */
   border: none;
   border-radius: 12px;
@@ -492,6 +492,19 @@ body.loaded .main {
   }
 }
 
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #splash-logo {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .track,
+  .slide {
+    transition: none !important;
+  }
+}
+
 #splash-logo {
   width: 200px;
   height: 200px;
@@ -510,6 +523,7 @@ body.loaded .main {
 }
 
 @keyframes textFlicker {
+
   0%,
   100% {
     opacity: 0.6;
@@ -525,4 +539,295 @@ body.loaded .main {
   font-size: 0.9rem;
   letter-spacing: 2px;
   animation: textFlicker 1.5s infinite;
+}
+
+/* -----------------------------
+   Responsive tweaks (desktop → tablet → mobile)
+   - Collapse sidebar to top nav on small screens
+   - Make carousel, slides and iframe fluid
+   - Improve touch targets and spacing
+   ----------------------------- */
+:root {
+  --sidebar-width: 65px;
+  --sidebar-hover-width: 240px;
+  --topbar-height: 64px;
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+  .viewport {
+    width: 100%;
+    height: 300px;
+  }
+
+  .slide {
+    flex: 0 0 400px;
+    height: 300px;
+  }
+
+  #splash-logo {
+    width: 160px;
+    height: 160px;
+  }
+
+  .page-section,
+  .main {
+    margin-left: var(--sidebar-width);
+    padding: 24px;
+  }
+}
+
+/* Mobile / small screens */
+@media (max-width: 768px) {
+
+  /* Sidebar becomes a top bar */
+  .sidebar {
+    width: 100%;
+    height: var(--topbar-height);
+    top: 0;
+    left: 0;
+    right: 0;
+    flex-direction: row;
+    padding: 8px 12px;
+    align-items: center;
+    z-index: 1100;
+    overflow: visible;
+  }
+
+  /* Disable hover expansion on touch devices by keeping width full */
+  .sidebar:hover {
+    width: 100%;
+  }
+
+  .logo {
+    margin: 0 12px 0 0;
+    transform: none;
+  }
+
+  /* Horizontal nav, always show text for clarity */
+  .nav-links {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-links li {
+    margin-bottom: 0;
+  }
+
+  .nav-links .text {
+    opacity: 1;
+    transition: none;
+    white-space: nowrap;
+    font-size: 0.95rem;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  /* Main content should not be offset to the left; add top padding to account for the top bar */
+  .main,
+  .page-section {
+    margin-left: 0;
+    padding-top: calc(var(--topbar-height) + 16px);
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .page-section {
+    padding-bottom: 48px;
+  }
+
+  /* Carousel becomes more compact and swipe-friendly */
+  .viewport {
+    width: calc(100% - 32px);
+    height: 220px;
+  }
+
+  .slide {
+    flex: 0 0 80%;
+    height: 220px;
+    margin: 0 12px;
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+
+  .slide.active {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .carousel {
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .slider-btn,
+  .nav {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+
+  #noteFrame {
+    height: 60vh;
+  }
+
+  #backToTop {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  /* Larger touch areas */
+  .nav-links a {
+    padding: 12px 14px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  #splash-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 18px;
+  }
+
+  .viewport {
+    height: 180px;
+  }
+
+  .slide {
+    height: 180px;
+    flex: 0 0 90%;
+  }
+
+  #noteFrame {
+    height: 1000px;
+  }
+
+  #gameFrame {
+    width: 100%;
+    height: 60vh;
+    max-width: 100%;
+  }
+
+  .side-box {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .main h1,
+  .page-section h1 {
+    font-size: 1.5rem;
+  }
+
+  .logo {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+
+/* Mobile menu toggle & expanded overlay */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.menu-toggle svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: flex;
+    margin-left: auto;
+  }
+
+  #noteFrame {
+    height: 900px; 
+    max-height: none; 
+  }
+
+  .sidebar .nav-links {
+    transition: transform 0.28s cubic-bezier(.2, .9, .3, 1), opacity 0.28s;
+  }
+
+  .sidebar.expanded .nav-links {
+    position: fixed;
+    top: var(--topbar-height);
+    left: 0;
+    right: 0;
+    background: rgba(24, 26, 33, 0.98);
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    z-index: 1200;
+    transform: translateY(0);
+    opacity: 1;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .sidebar.expanded .nav-links a {
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+    outline: none;
+  }
+
+  /* visible focus for keyboard users */
+  .nav-links a:focus-visible,
+  .menu-toggle:focus-visible,
+  .slider-btn:focus-visible,
+  .nav:focus-visible {
+    outline: 3px solid rgba(0, 168, 255, 0.9);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+
+  body.menu-open::after {
+    content: '';
+    position: fixed;
+    top: calc(var(--topbar-height));
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1100;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
 }
