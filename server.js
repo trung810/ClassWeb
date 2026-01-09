@@ -8,6 +8,15 @@ const app = express();
 app.use(express.json());
 app.use(express.static('./'));
 
+// Allow cross-origin requests for development (enables POSTs from Live Server or other ports)
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
+app.options('*', (req, res) => res.sendStatus(200));
+
 const DATA_FILE = path.join(__dirname, 'assets/data/messages.txt');
 const COOLDOWN_FILE = path.join(__dirname, 'assets/data/cooldowns.json');
 

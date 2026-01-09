@@ -19,7 +19,7 @@
             <div class="input-box">
                 <textarea id="msgInput" placeholder="Drop your thought..."></textarea>
                 <p id="wordCount" style="opacity:.7;font-size:.9rem"></p>
-                <button onclick="sendMessage()">Post Message</button>
+                <button id="postBtn" onclick="sendMessage()">Post Message</button>
             </div>
 
             <p id="status"></p>
@@ -59,6 +59,9 @@
     </div>
 
     <script>
+        // Determine API origin when serving from Live Server or file://
+        const API_ORIGIN = (location.protocol === 'file:' || location.port === '5501') ? 'http://localhost:3000' : '';
+
         // Persisted collapsed state
         let commentsCollapsed = localStorage.getItem('commentsCollapsed') === '1';
 
@@ -94,7 +97,7 @@
 
         async function loadMessages() {
             try {
-                const res = await fetch('/messages');
+                const res = await fetch(`${API_ORIGIN}/messages`);
                 const text = await res.text();
 
                 // Parse and reverse the lines to get newest first
@@ -149,6 +152,8 @@
         async function sendMessage() {
             const input = document.getElementById('msgInput');
             const nameInput = document.getElementById('nameInput');
+            const statusEl = document.getElementById('status');
+            const postBtn = document.getElementById('postBtn');
 
             let message = input.value.trim();
             let name = nameInput.value.trim() || "Anonymous";
@@ -157,28 +162,43 @@
 
             const words = message.split(/\s+/);
             if (words.length > 200) {
-                document.getElementById("status").innerText =
-                    `Max 200 words. You're at ${words.length}.`;
+                statusEl.innerText = `Max 200 words. You're at ${words.length}.`;
                 return;
             }
 
-            const res = await fetch("/send-message", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name: name || "",   // empty = Anonymous server-side
-                    message
-                })
-            });
+            postBtn.disabled = true;
+            statusEl.innerText = 'Sending...';
 
-            const data = await res.json();
+            try {
+                const res = await fetch(`${API_ORIGIN}/send-message`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: name || "",
+                        message
+                    })
+                });
 
-            if (data.success) {
-                input.value = "";
-                loadMessages();
-                document.getElementById('status').innerText = "Message sent!";
-            } else {
-                document.getElementById('status').innerText = data.error;
+                if (!res.ok) {
+                    const errText = await res.text().catch(() => res.statusText || 'Error');
+                    statusEl.innerText = `Server error: ${errText}`;
+                    return;
+                }
+
+                const data = await res.json().catch(() => ({}));
+
+                if (data && data.success) {
+                    input.value = "";
+                    loadMessages();
+                    statusEl.innerText = "Message sent!";
+                } else {
+                    statusEl.innerText = data.error || 'Could not send message.';
+                }
+            } catch (err) {
+                console.error('Network error sending message:', err);
+                statusEl.innerText = 'Network error. Are you running the local server?';
+            } finally {
+                postBtn.disabled = false;
             }
         }
 

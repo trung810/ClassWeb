@@ -11,6 +11,7 @@
 </head>
 
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
   <div id="splash-screen">
     <div class="splash-content">
       <img id="splash-logo" src="assets/pictures/components/logo.jpg" alt="Logo" />
@@ -24,41 +25,38 @@
   <aside class="sidebar">
     <!-- Logo -->
     <img class="logo" src="assets/pictures/components/logo.jpg" />
-    <button class="menu-toggle" aria-expanded="false" aria-controls="sidebarNav" aria-label="Open navigation">
-      <span class="sr-only">Open navigation</span>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M3 6h18M3 12h18M3 18h18" />
-      </svg>
-    </button>
 
     <!-- Navigation -->
-    <ul id="sidebarNav" class="nav-links" role="navigation" aria-hidden="true">
+    <ul class="nav-links">
       <li>
-        <a href="#section1" data-section="section1">
+        <a href="#section1" data-section="section1" class="tooltip-trigger">
           <img class="icon" src="assets/pictures/components/section1.svg" />
-          <span class="text">Mục 1</span>
+          <span class="text">Giới thiệu</span>
+          <span class="tooltip">Thông tin về lớp</span>
         </a>
       </li>
 
       <li>
-        <a href="#section2" data-section="section2">
+        <a href="#section2" data-section="section2" class="tooltip-trigger">
           <img class="icon" src="assets/pictures/components/section2.svg" />
-          <span class="text">Mục 2</span>
+          <span class="text">Thư viện</span>
+          <span class="tooltip">Ảnh và kỷ niệm</span>
         </a>
       </li>
 
       <li>
-        <a href="#section3" data-section="section3">
+        <a href="#section3" data-section="section3" class="tooltip-trigger">
           <img class="icon" src="assets/pictures/components/section3.svg" />
-          <span class="text">Mục 3</span>
+          <span class="text">Mini Game</span>
+          <span class="tooltip">Khám phá lớp học</span>
         </a>
       </li>
 
       <li>
-        <a href="#section4" data-section="section4">
+        <a href="#section4" data-section="section4" class="tooltip-trigger">
           <img class="icon" src="assets/pictures/components/section4.svg" />
-          <span class="text">Mục 4</span>
+          <span class="text">Bảng tin</span>
+          <span class="tooltip">Để lại lời nhắn</span>
         </a>
       </li>
     </ul>
@@ -67,114 +65,289 @@
     <div class="sidebar-footer">© Made By Tổ 2</div>
   </aside>
 
-  <main class="main">
-    <h1>Welcome</h1>
-    <div class="card">
-      <p>
-        Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
-        vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
-        được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
-        96. Tự mày mò học code rồi đi làm remote cho công ty Mỹ 2 năm nay. Mỗi
-        tối online 3-4 giờ là xong việc. Lương tháng 3k6. Nhưng thu nhập chính
-        vẫn là từ nhận các project bên ngoài làm thêm. Tuần làm 2,3 cái nhẹ
-        nhàng 9,10k tiền tươi thóc thật không phải đóng thuế. Làm gần được 3
-        năm mà nhà xe nó đã mua đủ cả. Nghĩ mà thèm. Gái gú thì cứ nghe nó bảo
-        làm CNTT thì chảy nước. Có bé kia dân du học sinh Úc, về được cô chị
-        giới thiệu làm ngân hàng VCB. Thế nào thằng ấy đi mở thẻ tín dụng gặp
-        phải thế là hốt được cả chị lẫn em. 3 đứa nó sống chung một căn hộ cao
-        cấp. Nhà con bé kia biết chuyện ban đầu phản đối sau biết thằng đấy
-        học IT thì đổi thái độ, cách ba bữa hỏi thăm, năm bữa tặng quà lấy
-        long, luôn giục cưới kẻo lỡ kèo ngon.
-      </p>
+  <main id="main" class="main">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-content">
+        <div class="hero-badge">✨ Chào mừng đến với</div>
+        <h1 class="hero-title">Lớp 12C2</h1>
+        <p class="hero-subtitle">Nơi kết nối những kỷ niệm và tình bạn đáng nhớ</p>
+        <!-- Announcements Widget -->
+        <div class="announce-card" aria-live="polite" aria-atomic="true">
+          <div class="announce-header">
+            <div class="announce-title">🗣️🔥</div>
+            <div class="announce-meta">
+              <button id="announcePrev" class="icon-btn" aria-label="Previous announcement">◀</button>
+              <button id="announcePause" class="icon-btn" aria-pressed="false" aria-label="Pause announcements">⏸</button>
+              <button id="announceNext" class="icon-btn" aria-label="Next announcement">▶</button>
+            </div>
+          </div>
+          <div id="announceBody" class="announce-body">Đang tải tin...</div>
+          <div id="announceAuthor" class="announce-author" aria-hidden="true"></div>
+        </div>
+        <div class="hero-buttons">
+          <button class="btn-primary" onclick="document.getElementById('section1').scrollIntoView({behavior: 'smooth'})">
+            <span>Khám phá ngay</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8H13M13 8L8 3M13 8L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="btn-secondary" onclick="document.getElementById('section4').scrollIntoView({behavior: 'smooth'})">
+            <span>Để lại lời nhắn</span>
+          </button>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-number" data-target="36">0</div>
+          <div class="stat-label">Học sinh</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📚</div>
+          <div class="stat-number" data-target="100">0</div>
+          <div class="stat-label">Môn học</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-number" data-target="0">0</div>
+          <div class="stat-label">Giải thưởng</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">❤️</div>
+          <div class="stat-number" data-target="36">0</div>
+          <div class="stat-label">Kỷ niệm</div>
+        </div>
+      </div>
     </div>
-    <br />
-    <div class="card">
-      <p>
-        Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
-        vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
-        được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
-        96. Tự mày mò học code rồi đi làm remote cho công ty Mỹ 2 năm nay. Mỗi
-        tối online 3-4 giờ là xong việc. Lương tháng 3k6. Nhưng thu nhập chính
-        vẫn là từ nhận các project bên ngoài làm thêm. Tuần làm 2,3 cái nhẹ
-        nhàng 9,10k tiền tươi thóc thật không phải đóng thuế. Làm gần được 3
-        năm mà nhà xe nó đã mua đủ cả. Nghĩ mà thèm. Gái gú thì cứ nghe nó bảo
-        làm CNTT thì chảy nước. Có bé kia dân du học sinh Úc, về được cô chị
-        giới thiệu làm ngân hàng VCB. Thế nào thằng ấy đi mở thẻ tín dụng gặp
-        phải thế là hốt được cả chị lẫn em. 3 đứa nó sống chung một căn hộ cao
-        cấp. Nhà con bé kia biết chuyện ban đầu phản đối sau biết thằng đấy
-        học IT thì đổi thái độ, cách ba bữa hỏi thăm, năm bữa tặng quà lấy
-        long, luôn giục cưới kẻo lỡ kèo ngon.
-      </p>
+
+    <!-- Info Cards Grid -->
+    <div class="cards-grid">
+      <div class="info-card">
+        <div class="info-card-icon">🎓</div>
+        <h3>Về chúng tôi</h3>
+        <p>Lớp 12C2 - một tập thể đoàn kết, năng động và tràn đầy nhiệt huyết. Chúng tôi không chỉ học tập mà còn cùng nhau trải nghiệm những khoảnh khắc đáng nhớ nhất của tuổi học trò.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">💻</div>
+        <h3>Công nghệ</h3>
+        <p>Trang web được xây dựng bởi học sinh lớp 12C2, thể hiện sự sáng tạo và đam mê công nghệ của chúng tôi. Đây là nơi lưu giữ những kỷ niệm và kết nối tất cả mọi người.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🌟</div>
+        <h3>Thành tựu</h3>
+        <p>Với tinh thần học tập không ngừng nghỉ, lớp chúng tôi đã đạt được nhiều thành tích xuất sắc trong các kỳ thi và hoạt động ngoại khóa, tạo dựng uy tín và niềm tự hào.</p>
+      </div>
     </div>
-    <br />
-    <div class="card">
-      <p>
-        Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
-        vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
-        được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
-        96. Tự mày mò học code rồi đi làm remote cho công ty Mỹ 2 năm nay. Mỗi
-        tối online 3-4 giờ là xong việc. Lương tháng 3k6. Nhưng thu nhập chính
-        vẫn là từ nhận các project bên ngoài làm thêm. Tuần làm 2,3 cái nhẹ
-        nhàng 9,10k tiền tươi thóc thật không phải đóng thuế. Làm gần được 3
-        năm mà nhà xe nó đã mua đủ cả. Nghĩ mà thèm. Gái gú thì cứ nghe nó bảo
-        làm CNTT thì chảy nước. Có bé kia dân du học sinh Úc, về được cô chị
-        giới thiệu làm ngân hàng VCB. Thế nào thằng ấy đi mở thẻ tín dụng gặp
-        phải thế là hốt được cả chị lẫn em. 3 đứa nó sống chung một căn hộ cao
-        cấp. Nhà con bé kia biết chuyện ban đầu phản đối sau biết thằng đấy
-        học IT thì đổi thái độ, cách ba bữa hỏi thăm, năm bữa tặng quà lấy
-        long, luôn giục cưới kẻo lỡ kèo ngon.
-      </p>
+
+    <!-- Quick Links -->
+    <div class="quick-links-section">
+      <h2>Truy cập nhanh</h2>
+      <div class="quick-links-grid">
+        <a href="#section1" class="quick-link">
+          <div class="quick-link-icon">📖</div>
+          <div class="quick-link-content">
+            <h4>Thông tin lớp</h4>
+            <p>Xem thông tin chi tiết về lớp học</p>
+          </div>
+        </a>
+        <a href="#section2" class="quick-link">
+          <div class="quick-link-icon">📸</div>
+          <div class="quick-link-content">
+            <h4>Thư viện ảnh</h4>
+            <p>Khám phá kỷ niệm qua hình ảnh</p>
+          </div>
+        </a>
+        <a href="#section3" class="quick-link">
+          <div class="quick-link-icon">🎮</div>
+          <div class="quick-link-content">
+            <h4>Mini Game</h4>
+            <p>Chơi game vui vẻ cùng bạn bè</p>
+          </div>
+        </a>
+        <a href="#section4" class="quick-link">
+          <div class="quick-link-icon">💬</div>
+          <div class="quick-link-content">
+            <h4>Bảng tin</h4>
+            <p>Để lại lời nhắn và kỷ niệm</p>
+          </div>
+        </a>
+      </div>
     </div>
-    <br />
   </main>
 
   <!-- Sections -->
   <section id="section1" class="page-section">
-    <h1>Mục 1</h1>
-    <div class="card">
+    <h1>📚 Giới thiệu về lớp</h1>
+    
+    <!-- Timeline Section -->
+    <div class="timeline-section">
+      <h2>Hành trình của chúng tôi</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-date">Năm 2023</div>
+            <h3>Khởi đầu</h3>
+            <p>Lớp 12C2 được thành lập với 45 thành viên đầy nhiệt huyết và ước mơ.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-date">Tháng 3/2024</div>
+            <h3>Thành tích đầu tiên</h3>
+            <p>Đạt giải Nhất trong cuộc thi Khoa học Kỹ thuật cấp trường.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-date">Tháng 9/2024</div>
+            <h3>Phát triển</h3>
+            <p>Ra mắt trang web lớp học và nhiều hoạt động ngoại khóa đa dạng.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-date">Hiện tại</div>
+            <h3>Tiếp tục phấn đấu</h3>
+            <p>Cùng nhau hướng tới kỳ thi tốt nghiệp và tương lai tươi sáng.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion Section -->
+    <div class="accordion-section">
+      <h2>Thông tin chi tiết</h2>
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-header">
+            <span>Thông tin cơ bản</span>
+            <svg class="accordion-icon" width="20" height="20" viewBox="0 0 20 20">
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="accordion-content">
+            <p>Lớp 12C2 là một trong những lớp học xuất sắc nhất trường. Với 45 học sinh đến từ nhiều vùng miền khác nhau, chúng tôi tạo nên một tập thể đa dạng và đoàn kết.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-header">
+            <span>Ban cán sự lớp</span>
+            <svg class="accordion-icon" width="20" height="20" viewBox="0 0 20 20">
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="accordion-content">
+            <p><strong>Lớp trưởng:</strong> Nguyễn Văn A<br>
+            <strong>Lớp phó:</strong> Trần Thị B<br>
+            <strong>Bí thư:</strong> Lê Văn C<br>
+            <strong>Văn nghệ:</strong> Phạm Thị D</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-header">
+            <span>Hoạt động nổi bật</span>
+            <svg class="accordion-icon" width="20" height="20" viewBox="0 0 20 20">
+              <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="accordion-content">
+            <ul>
+              <li>Tham gia cuộc thi Olympic các môn học</li>
+              <li>Hoạt động tình nguyện cộng đồng</li>
+              <li>Tổ chức các buổi sinh hoạt ngoại khóa</li>
+              <li>Phát triển kỹ năng mềm và công nghệ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 30px;">
+      <h3>Về lớp 12C2</h3>
       <p>
-        Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
-        vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
-        được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
-        96. Tự mày mò học code rồi đi làm remote cho công ty Mỹ 2 năm nay.
-        Mỗi tối online 3-4 giờ là xong việc. Lương tháng 3k6. Nhưng thu nhập
-        chính vẫn là từ nhận các project bên ngoài làm thêm. Tuần làm 2,3
-        cái nhẹ nhàng 9,10k tiền tươi thóc thật không phải đóng thuế. Làm
-        gần được 3 năm mà nhà xe nó đã mua đủ cả. Nghĩ mà thèm. Gái gú thì
-        cứ nghe nó bảo làm CNTT thì chảy nước. Có bé kia dân du học sinh Úc,
-        về được cô chị giới thiệu làm ngân hàng VCB. Thế nào thằng ấy đi mở
-        thẻ tín dụng gặp phải thế là hốt được cả chị lẫn em. 3 đứa nó sống
-        chung một căn hộ cao cấp. Nhà con bé kia biết chuyện ban đầu phản
-        đối sau biết thằng đấy học IT thì đổi thái độ, cách ba bữa hỏi thăm,
-        năm bữa tặng quà lấy long, luôn giục cưới kẻo lỡ kèo ngon.
+        Lớp 12C2 là một tập thể gắn kết, năng động và sáng tạo. Chúng tôi không chỉ học tập chăm chỉ 
+        mà còn luôn đồng hành cùng nhau trong mọi hoạt động. Từ những buổi học căng thẳng đến những 
+        giây phút thư giãn, tất cả đều tạo nên những kỷ niệm đáng nhớ của tuổi học trò.
       </p>
     </div>
   </section>
 
   <section id="section2" class="page-section">
-    <h1>Mục 2</h1>
+    <h1>📸 Thư viện ảnh</h1>
 
     <div class="carousel-container">
       <div class="carousel">
-        <button class="nav prev" aria-label="Previous slide">
-          <img src="assets/pictures/components/prev.png" alt="Previous" />
+        <button class="nav prev">
+          <img src="assets/pictures/components/prev.png" />
         </button>
         <div class="viewport">
           <div class="track" id="track"></div>
         </div>
-        <button class="nav next" aria-label="Next slide">
-          <img src="assets/pictures/components/next.png" alt="Next" />
+        <button class="nav next">
+          <img src="assets/pictures/components/next.png" />
         </button>
       </div>
     </div>
 
     <div class="card" style="margin: 20px auto;">
-      <p id="carousel-desc" aria-live="polite">Loading...</p>
+      <p id="carousel-desc">Loading...</p>
+    </div>
+
+    <!-- Photo Gallery Grid -->
+    <div class="photo-gallery-section">
+      <h2>Khoảnh khắc đáng nhớ</h2>
+      <div class="photo-grid">
+        <div class="photo-item">
+          <div class="photo-placeholder">
+            <span class="photo-icon">📷</span>
+            <p>Ngày khai giảng</p>
+          </div>
+        </div>
+        <div class="photo-item">
+          <div class="photo-placeholder">
+            <span class="photo-icon">🎉</span>
+            <p>Sinh nhật lớp</p>
+          </div>
+        </div>
+        <div class="photo-item">
+          <div class="photo-placeholder">
+            <span class="photo-icon">🏃</span>
+            <p>Giải thể thao</p>
+          </div>
+        </div>
+        <div class="photo-item">
+          <div class="photo-placeholder">
+            <span class="photo-icon">📚</span>
+            <p>Học bài nhóm</p>
+          </div>
+        </div>
+        <div class="photo-item">
+          <div class="photo-placeholder">
+            <span class="photo-icon">🌳</span>
+            <p>Dã ngoại</p>
+          </div>
+        </div>
+        <div class="photo-item">
+          <div class="photo-placeholder">
+            <span class="photo-icon">🎭</span>
+            <p>Văn nghệ</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section id="section3" class="page-section">
-    <h1>Mục 3</h1>
+    <h1>🎮 Mini Game - Khám phá lớp học</h1>
+    <div class="game-description-card">
+      <p>Di chuyển nhân vật bằng phím <strong>W/A/S/D</strong> và nhấn <strong>E</strong> để tương tác với các ghế ngồi. 
+      Khám phá thông tin về các bạn trong lớp!</p>
+    </div>
     <div class="content-with-sidebox">
       <div class="main-content">
         <iframe src="minigame.html" width="620" height="660" id="gameFrame"
@@ -182,33 +355,42 @@
       </div>
     </div>
 
-    <div class="card" style="margin: 20px auto;">
-      <p>
-        Ngành IT Việt Nam hiện nay ở đầu của sự phát triển. Có thể nói IT là
-        vua của các nghề. Vừa có tiền, có quyền. Vừa kiếm được nhiều $ lại
-        được xã hội trọng vọng. Thằng em mình học bách khoa cơ khí, sinh năm
-        96. Tự mày mò học code rồi đi làm remote cho công ty Mỹ 2 năm nay.
-        Mỗi tối online 3-4 giờ là xong việc. Lương tháng 3k6. Nhưng thu nhập
-        chính vẫn là từ nhận các project bên ngoài làm thêm. Tuần làm 2,3
-        cái nhẹ nhàng 9,10k tiền tươi thóc thật không phải đóng thuế. Làm
-        gần được 3 năm mà nhà xe nó đã mua đủ cả. Nghĩ mà thèm. Gái gú thì
-        cứ nghe nó bảo làm CNTT thì chảy nước. Có bé kia dân du học sinh Úc,
-        về được cô chị giới thiệu làm ngân hàng VCB. Thế nào thằng ấy đi mở
-        thẻ tín dụng gặp phải thế là hốt được cả chị lẫn em. 3 đứa nó sống
-        chung một căn hộ cao cấp. Nhà con bé kia biết chuyện ban đầu phản
-        đối sau biết thằng đấy học IT thì đổi thái độ, cách ba bữa hỏi thăm,
-        năm bữa tặng quà lấy long, luôn giục cưới kẻo lỡ kèo ngon.
-      </p>
+    <div class="card" style="margin-top: 20px;">
+      <h3>🎯 Hướng dẫn chơi</h3>
+      <ul style="line-height: 2;">
+        <li>Sử dụng phím <strong>W/A/S/D</strong> để di chuyển nhân vật</li>
+        <li>Nhấn phím <strong>E</strong> khi đứng gần ghế để xem thông tin</li>
+        <li>Nhấn nút <strong>Reset</strong> để đưa nhân vật về vị trí ban đầu</li>
+        <li>Khám phá toàn bộ lớp học để tìm hiểu về các bạn!</li>
+      </ul>
     </div>
   </section>
 
   <br />
   <section id="section4" class="page-section">
-    <h1>Mục 4</h1>
+    <h1>💬 Bảng tin - Để lại lời nhắn</h1>
+    <div class="card" style="margin-bottom: 20px;">
+      <p>Đây là nơi bạn có thể chia sẻ suy nghĩ, kỷ niệm, hay những lời chúc dành cho lớp 12C2. 
+      Hãy để lại dấu ấn của bạn tại đây!</p>
+    </div>
     <div class="main-content">
       <iframe src="note.html" id="noteFrame" style="border: none; border-radius: 12px;"></iframe>
     </div>
   </section>
+
+  <!-- Theme Toggle Button -->
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+    <svg class="sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+      <path d="M10 2V4M10 16V18M18 10H16M4 10H2M15.5 4.5L14 6M6 14L4.5 15.5M15.5 15.5L14 14M6 6L4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <svg class="moon-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" style="display: none;">
+      <path d="M17 10.5C16.5 15 12.5 18 8 18C4.5 18 2 15.5 2 12C2 7.5 5 3.5 9.5 3C9 4.5 9 6.5 10 8.5C11 10.5 13 11.5 15 11.5C15.5 11.5 16.5 11 17 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <!-- Reading Progress Bar -->
+  <div id="readingProgress" class="reading-progress"></div>
 
   <!-- JS -->
 
@@ -263,7 +445,7 @@
           // Stop the pulsing before the final fade
           const splashLogo = document.getElementById('splash-logo');
           splashLogo.style.animation = "none";
-
+          
           // 2. Start the Morph/Fade Transition
           setTimeout(() => {
             splash.classList.add('hidden'); // Fades the overlay
@@ -276,113 +458,87 @@
 
   <!-- Image Slider -->
   <script>
-    (function () {
-      const track = document.getElementById("track");
-      const prev = document.querySelector(".prev");
-      const next = document.querySelector(".next");
-      const viewport = document.querySelector('.viewport');
-      // disable nav until images are populated
-      if (prev) prev.disabled = true;
-      if (next) next.disabled = true;
+    const track = document.getElementById("track");
+    const prev = document.querySelector(".prev");
+    const next = document.querySelector(".next");
 
-      const path = "assets/pictures/carousel1/";
-      const ext = ".png";
-      let images = [];
-      let index = 0;
+    const path = "assets/pictures/carousel1/";
+    const ext = ".png";
+    let images = [];
+    let index = 0;
 
-      let descriptions = {}; // {1: "...", 2: "..."}
+    let descriptions = {}; // {1: "...", 2: "..."}
 
-      fetch("assets/pictures/carousel1/description.txt")
-        .then(res => res.text())
-        .then(text => {
-          text.trim().split("\n").forEach(line => {
-            const [id, desc] = line.split("|");
-            if (id && desc) {
-              descriptions[id.trim()] = desc.trim();
-            }
-          });
-        })
-        .catch(err => console.error("Description load error:", err));
-
-      function loadImages(i = 1) {
-        const img = new Image();
-        img.src = `${path}${i}${ext}`;
-        img.onload = () => {
-          images.push(img.src);
-          const slideDiv = document.createElement("div");
-          slideDiv.className = "slide";
-          const slideImg = document.createElement("img");
-          slideImg.src = img.src;
-          slideImg.alt = `Carousel image ${i}`;
-          slideDiv.appendChild(slideImg);
-          track.appendChild(slideDiv);
-          loadImages(i + 1);
-        };
-        img.onerror = () => {
-          if (images.length > 0) {
-            updateSlider();
-            if (prev) prev.disabled = false;
-            if (next) next.disabled = false;
+    fetch("assets/pictures/carousel1/description.txt")
+      .then(res => res.text())
+      .then(text => {
+        text.trim().split("\n").forEach(line => {
+          const [id, desc] = line.split("|");
+          if (id && desc) {
+            descriptions[id.trim()] = desc.trim();
           }
-        };
-      }
-
-      function updateSlider() {
-        const slides = document.querySelectorAll('.slide');
-        if (slides.length === 0) return;
-
-        const viewportWidth = viewport.offsetWidth;
-        const slide = slides[index];
-
-        // Center the active slide in the viewport
-        const moveAmount = (viewportWidth - slide.offsetWidth) / 2 - slide.offsetLeft;
-
-        track.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-        track.style.transform = `translateX(${moveAmount}px)`;
-
-        slides.forEach((s, i) => {
-          s.classList.toggle('active', i === index);
         });
+      })
+      .catch(err => console.error("Description load error:", err));
 
-        const descEl = document.getElementById("carousel-desc");
-        const descKey = (index + 1).toString();
+    function loadImages(i = 1) {
+      const img = new Image();
+      img.src = `${path}${i}${ext}`;
+      img.onload = () => {
+        images.push(img.src);
+        const slideDiv = document.createElement("div");
+        slideDiv.className = "slide";
+        const slideImg = document.createElement("img");
+        slideImg.src = img.src;
+        slideDiv.appendChild(slideImg);
+        track.appendChild(slideDiv);
+        loadImages(i + 1);
+      };
+      img.onerror = () => {
+        if (images.length > 0) updateSlider();
+      };
+    }
 
-        descEl.textContent = descriptions[descKey] || "No description available.";
-      }
+    function updateSlider() {
+      const slides = document.querySelectorAll('.slide');
+      if (slides.length === 0) return;
 
-      if (prev) prev.addEventListener('click', () => {
-        index = (index - 1 + images.length) % images.length;
-        updateSlider();
+      const slideWidth = 540; // 500 (width) + 40 (total margin)
+
+      // Find the center of the viewport
+      const viewportWidth = document.querySelector('.viewport').offsetWidth;
+      const centerOffset = (viewportWidth / 2) - (slideWidth / 2);
+
+      // Calculate movement
+      const moveAmount = centerOffset - (index * slideWidth);
+
+      track.style.transform = `translateX(${moveAmount}px)`;
+
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        if (i === index) {
+          slide.classList.add('active');
+        }
       });
-      if (next) next.addEventListener('click', () => {
-        index = (index + 1) % images.length;
-        updateSlider();
-      });
 
-      // Touch support - simple swipe detection
-      let startX = null;
-      viewport && viewport.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-      }, { passive: true });
+      const descEl = document.getElementById("carousel-desc");
+      const descKey = (index + 1).toString();
 
-      viewport && viewport.addEventListener('touchend', (e) => {
-        if (startX === null) return;
-        const endX = e.changedTouches[0].clientX;
-        const diff = endX - startX;
-        if (diff > 40) { index = (index - 1 + images.length) % images.length; updateSlider(); }
-        else if (diff < -40) { index = (index + 1) % images.length; updateSlider(); }
-        startX = null;
-      });
+      descEl.textContent = descriptions[descKey] || "No description available.";
+    }
 
-      // keyboard support: left/right arrow
-      window.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') { index = (index - 1 + images.length) % images.length; updateSlider(); }
-        if (e.key === 'ArrowRight') { index = (index + 1) % images.length; updateSlider(); }
-      });
+    prev.onclick = () => {
+      index = (index - 1 + images.length) % images.length;
+      updateSlider();
+    };
 
-      window.addEventListener('resize', updateSlider);
-      loadImages();
-    })();
+    next.onclick = () => {
+      index = (index + 1) % images.length;
+      updateSlider();
+    };
+
+    window.addEventListener('resize', updateSlider);
+    loadImages();
   </script>
 
   <!-- Back to top button -->
@@ -406,67 +562,191 @@
     });
   </script>
 
-  <!-- Sidebar toggle (mobile) -->
+  <!-- Stats Counter Animation -->
   <script>
-    (function () {
-      const sidebar = document.querySelector('.sidebar');
-      const toggle = document.querySelector('.menu-toggle');
-      const sidebarNav = document.getElementById('sidebarNav');
-      if (!sidebar || !toggle) return;
+    function animateCounter(element) {
+      const target = parseInt(element.getAttribute('data-target'));
+      const duration = 2000;
+      const increment = target / (duration / 16);
+      let current = 0;
 
-      function getFocusable() {
-        return sidebarNav ? Array.from(sidebarNav.querySelectorAll('a, button')) : [];
-      }
-
-      function closeMenu() {
-        sidebar.classList.remove('expanded');
-        toggle.setAttribute('aria-expanded', 'false');
-        if (sidebarNav) sidebarNav.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('menu-open');
-        document.removeEventListener('click', onDocClick);
-        document.removeEventListener('keydown', onKeyDown);
-        toggle.focus();
-      }
-
-      function openMenu() {
-        sidebar.classList.add('expanded');
-        toggle.setAttribute('aria-expanded', 'true');
-        if (sidebarNav) sidebarNav.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('menu-open');
-        setTimeout(() => {
-          const focusable = getFocusable();
-          if (focusable.length) focusable[0].focus();
-          document.addEventListener('click', onDocClick);
-          document.addEventListener('keydown', onKeyDown);
-        }, 10);
-      }
-
-      function onDocClick(e) {
-        if (!sidebar.contains(e.target) && !toggle.contains(e.target)) closeMenu();
-      }
-
-      function onKeyDown(e) {
-        if (e.key === 'Escape') { closeMenu(); return; }
-        if (e.key === 'Tab') {
-          const focusable = getFocusable();
-          if (!focusable.length) return;
-          const first = focusable[0];
-          const last = focusable[focusable.length - 1];
-          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      const updateCounter = () => {
+        current += increment;
+        if (current < target) {
+          element.textContent = Math.floor(current);
+          requestAnimationFrame(updateCounter);
+        } else {
+          element.textContent = target;
         }
-      }
+      };
 
-      toggle.addEventListener('click', function (e) {
-        e.stopPropagation();
-        const expanded = this.getAttribute('aria-expanded') === 'true';
-        if (expanded) closeMenu(); else openMenu();
+      updateCounter();
+    }
+
+    // Trigger animation when hero stats are visible
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const counters = entry.target.querySelectorAll('.stat-number');
+          counters.forEach(counter => {
+            if (counter.textContent === '0') {
+              animateCounter(counter);
+            }
+          });
+          statsObserver.unobserve(entry.target);
+        }
       });
+    }, { threshold: 0.5 });
 
-      // ensure initial state
-      if (sidebarNav) sidebarNav.setAttribute('aria-hidden', 'true');
-    })();
+    const heroStats = document.querySelector('.hero-stats');
+    if (heroStats) {
+      statsObserver.observe(heroStats);
+    }
   </script>
+
+  <!-- Accordion Functionality -->
+  <script>
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const item = header.parentElement;
+        const content = item.querySelector('.accordion-content');
+        const isActive = item.classList.contains('active');
+
+        // Close all accordion items
+        document.querySelectorAll('.accordion-item').forEach(i => {
+          i.classList.remove('active');
+          i.querySelector('.accordion-content').style.maxHeight = null;
+        });
+
+        // Open clicked item if it wasn't active
+        if (!isActive) {
+          item.classList.add('active');
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      });
+    });
+  </script>
+
+  <!-- Theme Toggle -->
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const sunIcon = themeToggle.querySelector('.sun-icon');
+    const moonIcon = themeToggle.querySelector('.moon-icon');
+    const root = document.documentElement;
+
+    // Check for saved theme preference or default to 'dark'
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    root.setAttribute('data-theme', currentTheme);
+    
+    if (currentTheme === 'light') {
+      sunIcon.style.display = 'none';
+      moonIcon.style.display = 'block';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const theme = root.getAttribute('data-theme');
+      const newTheme = theme === 'dark' ? 'light' : 'dark';
+      
+      root.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      if (newTheme === 'light') {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      } else {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      }
+    });
+  </script>
+
+  <!-- Reading Progress Bar -->
+  <script>
+    const progressBar = document.getElementById('readingProgress');
+    
+    window.addEventListener('scroll', () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight - windowHeight;
+      const scrolled = window.scrollY;
+      const progress = (scrolled / documentHeight) * 100;
+      
+      progressBar.style.width = progress + '%';
+    });
+  </script>
+
+    <!-- Announcements Widget Script -->
+    <script>
+      (function(){
+        const announceBody = document.getElementById('announceBody');
+        const announceAuthor = document.getElementById('announceAuthor');
+        const prevBtn = document.getElementById('announcePrev');
+        const nextBtn = document.getElementById('announceNext');
+        const pauseBtn = document.getElementById('announcePause');
+
+        let messages = [];
+        let idx = 0;
+        let interval = null;
+        let paused = false;
+
+        function render() {
+          if (messages.length === 0) {
+            announceBody.textContent = 'Không có tin mới.';
+            announceAuthor.textContent = '';
+            return;
+          }
+
+          const [author, text] = messages[idx];
+          announceBody.textContent = text;
+          announceAuthor.textContent = author ? `— ${author}` : '';
+        }
+
+        function next() {
+          idx = (idx + 1) % messages.length;
+          render();
+        }
+
+        function prev() {
+          idx = (idx - 1 + messages.length) % messages.length;
+          render();
+        }
+
+        function startAuto() {
+          if (interval) clearInterval(interval);
+          interval = setInterval(() => {
+            if (!paused) next();
+          }, 4000);
+        }
+
+        prevBtn.addEventListener('click', () => { prev(); startAuto(); });
+        nextBtn.addEventListener('click', () => { next(); startAuto(); });
+        pauseBtn.addEventListener('click', () => {
+          paused = !paused;
+          pauseBtn.textContent = paused ? '▶' : '⏸';
+          pauseBtn.setAttribute('aria-pressed', String(paused));
+        });
+
+        fetch('assets/data/messages.txt')
+          .then(r => r.text())
+          .then(text => {
+            messages = text.trim().split('\n').map(line => {
+              const parts = line.split('|');
+              return [parts[0] ? parts[0].trim() : 'Ẩn danh', parts[1] ? parts[1].trim() : ''];
+            }).filter(m => m[1]);
+
+            if (messages.length === 0) {
+              announceBody.textContent = 'Không có tin mới.';
+              return;
+            }
+
+            render();
+            startAuto();
+          })
+          .catch(err => {
+            announceBody.textContent = 'Lỗi khi tải tin.';
+            console.error(err);
+          });
+      })();
+    </script>
 </body>
 
 </html>
