@@ -2,13 +2,41 @@
     box-sizing: border-box;
 }
 
+:root {
+    --bg: #111;
+    --bg-card: #222;
+    --bg-input: #222;
+    --text: #ffffff;
+    --muted: #ccc;
+    --accent: #3a7afe;
+    --accent-2: #27c67a;
+    --panel-bg: #0f0f0f;
+    --overlay-backdrop: rgba(0,0,0,0.66);
+    --border: rgba(255,255,255,0.04);
+    --icon-filter: invert(0);
+}
+
+[data-theme="light"] {
+    --bg: #f5f7fa;
+    --bg-card: #ffffff;
+    --bg-input: #f0f3f8;
+    --text: #2d3748;
+    --muted: #6b7280;
+    --accent: #2563eb;
+    --accent-2: #059669;
+    --panel-bg: #ffffff;
+    --overlay-backdrop: rgba(0,0,0,0.12);
+    --border: rgba(0,0,0,0.06);
+    --icon-filter: invert(1) contrast(90%);
+}
+
 body {
     margin: 0;
     overflow: auto;
     overflow-x: hidden;
     font-family: sans-serif;
-    background: #111;
-    color: white;
+    background: var(--bg);
+    color: var(--text);
 }
 
 .marquee {
@@ -57,16 +85,16 @@ body {
     border-radius: 10px;
     border: none;
     outline: none;
-    background: #222;
-    color: white;
+    background: var(--bg-input);
+    color: var(--text);
 }
 
 .input-box button {
     padding: 12px 18px;
     border-radius: 10px;
     border: none;
-    background: #3a7afe;
-    color: white;
+    background: var(--accent);
+    color: #fff;
     cursor: pointer;
 }
 
@@ -78,8 +106,8 @@ body {
     border-radius: 10px;
     border: none;
     outline: none;
-    background: #222;
-    color: white;
+    background: var(--bg-input);
+    color: var(--text);
     resize: none;
 }
 
@@ -93,18 +121,18 @@ body {
     overflow-x: hidden;
     padding: 18px;
     border-radius: 12px;
-    background: #1b1b1b;
+    background: var(--bg-card);
 }
 
 /* Description styling */
 .desc-box {
     padding: 15px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
     border-radius: 10px;
     font-size: 0.95rem;
     line-height: 1.5;
-    color: #ccc;
-    border: 1px dashed #3a7afe;
+    color: var(--muted);
+    border: 1px dashed var(--accent);
 
     /* FIX: Force text to stay inside */
     word-wrap: break-word;
@@ -159,9 +187,9 @@ body {
 .comment {
     padding: 12px;
     margin-bottom: 12px;
-    background: #222;
+    background: var(--bg-card);
     border-radius: 8px;
-    border-left: 4px solid #4e9cff;
+    border-left: 4px solid var(--accent);
     transition: background 0.18s, padding 0.18s;
 }
 
@@ -182,14 +210,14 @@ body {
     padding: 8px 12px;
     border-radius: 8px;
     border: none;
-    background: #3a7afe;
-    color: white;
+    background: var(--accent);
+    color: #fff;
     cursor: pointer;
     font-weight: 600;
 }
 
 .comments-header button[aria-pressed="true"] {
-    background: #2b5fd8;
+    filter: brightness(0.92);
 }
 
 .comment .avatar {
@@ -260,7 +288,7 @@ body {
 .comments-overlay .overlay-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.66);
+    background: var(--overlay-backdrop);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -268,7 +296,7 @@ body {
 }
 
 .overlay-panel {
-    background: #0f0f0f;
+    background: var(--panel-bg);
     width: min(980px, 95vw);
     height: min(920px, 90vh);
     border-radius: 12px;
@@ -276,8 +304,8 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border);
 }
 
 .overlay-header {
@@ -291,14 +319,15 @@ body {
 .overlay-header h2 {
     margin: 0;
     font-size: 1.05rem;
+    color: var(--text);
 }
 
 #closeCommentsRead {
     padding: 8px 12px;
     border-radius: 8px;
     border: none;
-    background: #3a7afe;
-    color: white;
+    background: var(--accent);
+    color: #fff;
     cursor: pointer;
 }
 
@@ -326,7 +355,7 @@ body.comments-read-open {
 /* Minor style for read button */
 .comments-header button#readCommentsBtn {
     margin-left: 8px;
-    background: #27c67a;
+    background: var(--accent-2);
 }
 
 /* Small phones: use most of the viewport for comments but leave room for input/header */

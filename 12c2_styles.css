@@ -40,6 +40,23 @@
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+  /* Icon theming variables */
+  --icon-filter: invert(0) grayscale(0) contrast(100%); /* used for PNG icons */
+  --icon-color: var(--text-primary); /* used for SVGs and icon text */
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f7fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --accent-secondary: #e2e8f0;
+
+  /* In light theme, invert / darken icons where needed */
+  --icon-filter: invert(1) grayscale(0) contrast(95%);
+  --icon-color: var(--text-primary);
 }
 
 [data-theme="light"] {
@@ -205,6 +222,14 @@ body.loaded .main {
   background: var(--accent-secondary);
   color: var(--text-primary);
   transform: translateX(4px);
+}
+
+.nav-links a .icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  filter: var(--icon-filter);
+  transition: filter 0.25s ease;
 }
 
 .nav-links .text {
@@ -951,7 +976,6 @@ body.loaded .main {
 .nav img {
   width: 32px;
   height: 32px;
-  filter: brightness(0) invert(1);
 }
 
 .nav:hover {
@@ -1020,7 +1044,8 @@ body.loaded .main {
   width: 22px;
   height: 22px;
   pointer-events: none;
-  filter: brightness(0) invert(1);
+  filter: var(--icon-filter);
+  transition: filter 0.25s ease, transform 0.18s ease;
 }
 
 #backToTop.show {
@@ -1093,11 +1118,17 @@ body.loaded .main {
 .icon-btn {
   background: transparent;
   border: 1px solid rgba(255,255,255,0.04);
-  color: var(--text-primary);
+  color: var(--icon-color);
   padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
   margin-left: 6px;
+}
+
+/* Apply color variable to SVGs that use currentColor for strokes/fills */
+svg {
+  color: var(--icon-color);
+  transition: color 0.25s ease;
 }
 .icon-btn:focus {
   outline: 3px solid rgba(0,168,255,0.25);

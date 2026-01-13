@@ -266,6 +266,34 @@
             });
         })();
     </script>
+    <script>
+      /* Sync theme inside iframe with parent's stored theme. Falls back to 'dark' if none saved. */
+      (function(){
+        function applyThemeFromStorage(){
+          try{
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+          }catch(e){/* ignore */}
+        }
+
+        applyThemeFromStorage();
+
+        // Listen for storage changes from parent window (works cross-window)
+        window.addEventListener('storage', (e) => {
+          if (e.key === 'theme') applyThemeFromStorage();
+        });
+
+        // As a fallback, allow parent to postMessage a theme update
+        window.addEventListener('message', (ev) => {
+          try{
+            const d = ev.data;
+            if (d && d.type === 'theme' && d.value) {
+              document.documentElement.setAttribute('data-theme', d.value);
+            }
+          }catch(err){}
+        });
+      })();
+    </script>
 </body>
 
 </html>

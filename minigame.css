@@ -65,7 +65,6 @@
     /* 1 for right, -1 for left */
     transform: scale(var(--scale)) scaleX(var(--dir)) translateY(7px);
     transform-origin: bottom center;
-    filter: invert(1);
 }
 
 /* Description Box */
