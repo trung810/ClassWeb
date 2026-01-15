@@ -255,8 +255,9 @@
               <strong>Lớp trưởng:</strong> Nguyễn Phan Ngọc Anh<br>
               <strong>Lớp phó Học tập:</strong> Nguyễn Ngọc Khánh Đoan<br>
               <strong>Lớp phó Lao động:</strong> Huỳnh Huy Hoàng<br>
-              <strong>Lớp phó Văn thể mỹ:</strong> Đào Thị Hồng
+              <strong>Lớp phó Văn thể mỹ:</strong> Đào Thị Hồng<br>
               <strong>Bí thư:</strong> Nguyễn Thị Ngọc Thuỳ <br>
+              <strong>Phó bí thư:</strong> Bùi Quốc Thái <br>
               <strong>Thủ quỹ:</strong> Huỳnh Hồ Minh Quân <br>
               <br>
               <strong>Tổ trưởng Tổ 1:</strong> Nguyễn Khắc Tùng Dương <br>
@@ -321,37 +322,31 @@
     <div class="photo-gallery-section">
       <h2>Khoảnh khắc đáng nhớ</h2>
       <div class="photo-grid">
-        <div class="photo-item">
+        <div class="photo-item gallery-trigger" data-gallery="TapThe">
           <div class="photo-placeholder">
             <span class="photo-icon">📷</span>
-            <p>Ngày khai giảng</p>
+            <p>Ảnh tập thể</p>
           </div>
         </div>
-        <div class="photo-item">
+        <div class="photo-item gallery-trigger" data-gallery="HoatDong">
           <div class="photo-placeholder">
             <span class="photo-icon">🎉</span>
-            <p>Sinh nhật lớp</p>
+            <p>Hoạt động</p>
           </div>
         </div>
-        <div class="photo-item">
+        <div class="photo-item gallery-trigger" data-gallery="TinhNguyen">
           <div class="photo-placeholder">
             <span class="photo-icon">🏃</span>
-            <p>Giải thể thao</p>
+            <p>Tình nguyện</p>
           </div>
         </div>
-        <div class="photo-item">
-          <div class="photo-placeholder">
-            <span class="photo-icon">📚</span>
-            <p>Học bài nhóm</p>
-          </div>
-        </div>
-        <div class="photo-item">
+        <div class="photo-item gallery-trigger" data-gallery="GiaoVien">
           <div class="photo-placeholder">
             <span class="photo-icon">🌳</span>
-            <p>Dã ngoại</p>
+            <p>Ảnh chụp giáo viên</p>
           </div>
         </div>
-        <div class="photo-item">
+        <div class="photo-item gallery-trigger" data-gallery="VanNghe">
           <div class="photo-placeholder">
             <span class="photo-icon">🎭</span>
             <p>Văn nghệ</p>
@@ -359,7 +354,20 @@
         </div>
       </div>
     </div>
+
+    <div id="gallery-view" class="gallery-view hidden">
+      <div class="gallery-header">
+        <h2 id="gallery-title"></h2>
+        <button id="closeGallery">✖</button>
+      </div>
+      <div id="gallery-grid" class="gallery-grid"></div>
+    </div>
   </section>
+
+  <div id="lightbox" class="lightbox hidden">
+    <span id="lightbox-close">✖</span>
+    <img id="lightbox-img">
+  </div>
 
   <section id="section3" class="page-section">
     <h1>🎮 Mini Game - Khám phá lớp học</h1>
@@ -485,7 +493,7 @@
     const next = document.querySelector(".next");
 
     const path = "assets/pictures/carousel1/";
-    const ext = ".png";
+    const ext = ".jpg";
     let images = [];
     let index = 0;
 
@@ -514,7 +522,7 @@
         slideImg.src = img.src;
         slideDiv.appendChild(slideImg);
         track.appendChild(slideDiv);
-        loadImages(i + 1);
+        loadImages(i + 1);F
       };
       img.onerror = () => {
         if (images.length > 0) updateSlider();
@@ -561,6 +569,68 @@
 
     window.addEventListener('resize', updateSlider);
     loadImages();
+  </script>
+  <script>
+    // Lightbox
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const closeLightbox = document.getElementById("lightbox-close");
+
+    // Delegation so works for all gallery images
+    document.addEventListener("click", e => {
+      if (e.target.closest(".gallery-grid img")) {
+        lightboxImg.src = e.target.src;
+        lightbox.classList.remove("hidden");
+      }
+    });
+
+    closeLightbox.addEventListener("click", () => {
+      lightbox.classList.add("hidden");
+    });
+
+    lightbox.addEventListener("click", e => {
+      if (e.target === lightbox) {
+        lightbox.classList.add("hidden");
+      }
+    });
+  </script>
+
+  <script>
+    const galleryMap = {
+      "GiaoVien": 13,
+      "HoatDong": 4,
+      "TapThe": 8,
+      "TinhNguyen": 6,
+      "VanNghe": 11
+    };
+
+    const galleryView = document.getElementById("gallery-view");
+    const galleryTitle = document.getElementById("gallery-title");
+    const galleryGrid = document.getElementById("gallery-grid");
+    const closeBtn = document.getElementById("closeGallery");
+
+    document.querySelectorAll(".gallery-trigger").forEach(item => {
+      item.addEventListener("click", () => {
+        const folder = item.dataset.gallery;
+        const count = galleryMap[folder] || 0;
+
+        galleryTitle.textContent = folder.replace(/([A-Z])/g, ' $1').trim();
+        galleryGrid.innerHTML = "";
+
+        for (let i = 1; i <= count; i++) {
+          const img = document.createElement("img");
+          img.src = `assets/pictures/Gallery/${folder}/${i}.jpg`;
+          galleryGrid.appendChild(img);
+        }
+
+        galleryView.classList.remove("hidden");
+        galleryView.scrollIntoView({ behavior: "smooth" });
+      });
+    });
+
+    closeBtn.addEventListener("click", () => {
+      galleryView.classList.add("hidden");
+    });
   </script>
 
   <!-- Back to top button -->
