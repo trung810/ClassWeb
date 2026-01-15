@@ -106,28 +106,28 @@
 
         // Pointer handling: ignore touch input entirely (mobile uses on-screen controls below the game).
         // For mouse/pen (non-touch) we still support click-to-move.
-        game.addEventListener('pointerdown', (ev) => {
-            if (ev.pointerType === 'touch') return; // do not handle touch taps here
+        // game.addEventListener('pointerdown', (ev) => {
+        //     if (ev.pointerType === 'touch') return; // do not handle touch taps here
 
-            const rect = game.getBoundingClientRect();
-            const cx = ev.clientX - rect.left;
-            const cy = ev.clientY - rect.top;
+        //     const rect = game.getBoundingClientRect();
+        //     const cx = ev.clientX - rect.left;
+        //     const cy = ev.clientY - rect.top;
 
-            const tx = Math.max(20, Math.min(game.clientWidth - player.clientWidth - 20, cx - player.clientWidth / 2));
-            const ty = Math.max(FLOOR_TOP, Math.min(game.clientHeight - player.clientHeight - 20, cy - player.clientHeight / 2));
+        //     const tx = Math.max(20, Math.min(game.clientWidth - player.clientWidth - 20, cx - player.clientWidth / 2));
+        //     const ty = Math.max(FLOOR_TOP, Math.min(game.clientHeight - player.clientHeight - 20, cy - player.clientHeight / 2));
 
-            touchTarget = { tx, ty, cx, cy };
+        //     touchTarget = { tx, ty, cx, cy };
 
-            if (touchMarker) {
-                touchMarker.style.left = cx + 'px';
-                touchMarker.style.top = cy + 'px';
-                touchMarker.classList.add('visible');
-                clearTimeout(touchMarker._hideTimeout);
-                touchMarker._hideTimeout = setTimeout(() => touchMarker.classList.remove('visible'), 2000);
-            }
+        //     if (touchMarker) {
+        //         touchMarker.style.left = cx + 'px';
+        //         touchMarker.style.top = cy + 'px';
+        //         touchMarker.classList.add('visible');
+        //         clearTimeout(touchMarker._hideTimeout);
+        //         touchMarker._hideTimeout = setTimeout(() => touchMarker.classList.remove('visible'), 2000);
+        //     }
 
-            for (let k in keys) keys[k] = false;
-        });
+        //     for (let k in keys) keys[k] = false;
+        // });
 
         // Also support touchcancel to cancel a target
         game.addEventListener('pointercancel', () => {
